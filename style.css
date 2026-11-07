@@ -557,6 +557,8 @@ html, body {
   color: var(--muted);
 }
 .test-input[hidden] { display: none; }
+.test-input.big { font-size: 16px; color: var(--yellow-soft); }
+.test-input.big input { font-size: 20px; min-width: min(460px, 100%); border-color: var(--yellow); }
 .test-input input {
   font: inherit;
   font-size: 16px;

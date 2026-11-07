@@ -310,6 +310,7 @@ const Speech = {
   async listen() {
     if (TEST_MODE) return this._listenText();
     await this._waitIdle();
+    if (this.textMode) return this._listenText();
     if (IS_IOS) {
       // iPad/iPhone: Audio-Sitzung freigeben, kein Signalton (blockiert sonst das Mikrofon)
       try { speechSynthesis.cancel(); } catch { /* egal */ }
@@ -393,7 +394,11 @@ const Speech = {
           rec._pause = setTimeout(() => { try { rec.stop(); } catch { /* egal */ } }, 1400);
         }
       };
-      rec.onerror = (e) => { error = e.error; diag(`Fehler: ${e.error}`); };
+      rec.onerror = (e) => {
+        error = e.error;
+        diag(`Fehler: ${e.error}`);
+        setTimeout(() => { try { rec.abort(); } catch { /* egal */ } finish(); }, 700);
+      };
       rec.onend = finish;
 
       const timer = setTimeout(() => {
@@ -456,10 +461,20 @@ async function ask(prompt, { retryPrompt = prompt, maxTries = Infinity } = {}) {
 
     if (alts?.length) { Speech.fails = 0; return alts; }
 
+    // iPad: Spracherkennung vom System gesperrt → Antworten eintippen oder per Tastatur diktieren
+    if (IS_IOS && !Speech.textMode
+      && (error === 'service-not-allowed' || (Speech.tapMode && error === 'not-allowed'))) {
+      Speech.textMode = true;
+      tries--;
+      UI.enableTextInput();
+      await Speech.speak(`Die Spracherkennung ist auf diesem iPad gesperrt. Bitte tippe deine Antwort unten ein, oder nutze die Mikrofon-Taste der Tastatur. ${retryPrompt}`);
+      continue;
+    }
+
     // iPad/iPhone: klappt das automatische Zuhören nicht, auf "Tippen & Sprechen" umschalten
-    if (IS_IOS && !Speech.tapMode && !TEST_MODE) {
+    if (IS_IOS && !Speech.tapMode && !Speech.textMode && !TEST_MODE) {
       Speech.fails = (Speech.fails || 0) + 1;
-      if (Speech.fails >= 1 || ['not-allowed', 'service-not-allowed', 'start-failed'].includes(error)) {
+      if (Speech.fails >= 1) {
         Speech.tapMode = true;
         tries--; // zählt nicht als Fehlversuch
         await Speech.speak(`Auf diesem Gerät musst du kurz auf das Mikrofon tippen, bevor du sprichst. ${retryPrompt}`);
@@ -468,7 +483,7 @@ async function ask(prompt, { retryPrompt = prompt, maxTries = Infinity } = {}) {
     }
 
     if (['not-allowed', 'service-not-allowed'].includes(error)) {
-      throw new FatalError('Der Zugriff auf Mikrofon oder Spracherkennung wurde verweigert. Chrome: Schloss-Symbol in der Adressleiste. iPad: Einstellungen → Safari → Mikrofon erlauben und unter Allgemein → Tastatur die Diktierfunktion einschalten. Danach neu starten.');
+      throw new FatalError('Der Zugriff auf Mikrofon oder Spracherkennung wurde verweigert. Chrome: Schloss-Symbol in der Adressleiste. iPad: Siri und die Diktierfunktion einschalten sowie unter Datenschutz & Sicherheit → Spracherkennung den Zugriff erlauben. Danach neu starten.');
     }
     if (error === 'audio-capture') {
       throw new FatalError('Es wurde kein Mikrofon gefunden. Bitte schließe ein Mikrofon an und starte neu.');
@@ -538,6 +553,13 @@ const UI = {
     $('#mic-label').textContent = labels[mode] || '';
   },
   caption(text) { $('#caption').textContent = text; },
+  enableTextInput() {
+    const form = $('#test-input');
+    form.hidden = false;
+    form.classList.add('big');
+    form.querySelector('label').textContent = 'Antwort eintippen – oder auf der Tastatur die Mikrofon-Taste zum Diktieren nutzen:';
+    form.querySelector('input').placeholder = 'Antwort …';
+  },
   diag(text) { const el = $('#diag'); if (el) el.textContent = text; },
   heard(text, interim) {
     const el = $('#heard');
