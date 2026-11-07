@@ -64,6 +64,15 @@ Danach im Browser <http://localhost:8000> öffnen.
 | `style.css` | Sternenhimmel-Look, gelbe Schrift, Lichtschwert-Rahmen, Animationen |
 | `game.js` | Spiellogik, Sprachausgabe, Eingabe per Tastatur/Mikrofon, tolerante Antwortauswertung, Sternenfeld |
 | `questions.json` | 50 Fragen und 7 Stichfragen |
+| `fonts/` | Schriften Orbitron und Exo 2 (lokal, SIL Open Font License 1.1) |
+
+## Datenschutz
+
+- Das Spiel läuft komplett im Browser. Es hat **keinen eigenen Server, keine Datenbank, keine Cookies und kein Tracking**. Namen und Punkte bleiben nur bis zum Neuladen der Seite im Speicher des Geräts.
+- **Schriften** werden vom selben Server wie das Spiel geladen, nicht von Google.
+- **GitHub Pages** (GitHub/Microsoft) speichert beim Aufruf technische Daten wie die IP-Adresse in Server-Logs.
+- **Vorlesen:** Das übernimmt die Sprachausgabe des Browsers bzw. Geräts. Auf iPad/iPhone sind das meist Apple-Stimmen direkt auf dem Gerät. In Chrome werden Google-Stimmen bevorzugt, die den Text an Google senden können.
+- **Spracheingabe (optional):** Nur wenn jemand aufs Mikrofon tippt (oder „Freihändig“ einschaltet), geht die Aufnahme zur Auswertung an Apple (Safari) bzw. Google (Chrome). Wer tippt, sendet keine Daten.
 
 ## Eigene Fragen hinzufügen
 
