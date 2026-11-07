@@ -16,6 +16,8 @@ GitHub Pages läuft über HTTPS, deshalb funktioniert dort auch der Mikrofonzugr
 - **iPad/iPhone:** Nimm **Safari**. Chrome auf iOS unterstützt die Spracherkennung voraussichtlich nicht.
   - Unter *Einstellungen → Allgemein → Tastatur* die **Diktierfunktion** einschalten.
   - Beim ersten Start den Mikrofonzugriff erlauben.
+  - Startet Safari die Spracherkennung nicht von selbst, schaltet das Spiel automatisch auf **„Tippen & Sprechen“** um. Das Mikrofon-Symbol leuchtet dann gelb: einmal darauf tippen und sprechen.
+  - Unter dem Untertitel steht eine kleine Diagnosezeile (z. B. `Start → Mikro an → Sprache → Ergebnis`). Sie hilft bei der Fehlersuche.
 - **Computer:** Nimm **Google Chrome**.
 - In beiden Fällen braucht ihr eine **Internetverbindung**, weil die Spracherkennung über die Server von Apple bzw. Google läuft.
 

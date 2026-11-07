@@ -524,6 +524,27 @@ html, body {
   color: var(--blue);
 }
 .heard.interim { opacity: 0.6; font-style: italic; }
+.diag {
+  min-height: 1.2em;
+  font-size: 12px;
+  color: #5d6378;
+  letter-spacing: 0.02em;
+}
+
+/* Tippen & Sprechen (iPad) */
+.mic[data-state="tap"] { cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.mic[data-state="tap"] .mic-ring {
+  transform: scale(1.25);
+  border-color: #fff;
+  box-shadow: 0 0 4px #fff, 0 0 14px var(--yellow), 0 0 34px var(--yellow);
+  animation: tap-pulse 1.2s ease-in-out infinite;
+}
+.mic[data-state="tap"] svg { fill: var(--yellow); stroke: var(--yellow); }
+.mic[data-state="tap"] .mic-label { color: var(--yellow); text-shadow: 0 0 8px var(--yellow); margin-top: 8px; }
+@keyframes tap-pulse {
+  0%, 100% { transform: scale(1.2); }
+  50%      { transform: scale(1.32); }
+}
 
 .test-input {
   display: flex;

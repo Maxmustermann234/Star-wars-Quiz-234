@@ -18,6 +18,9 @@ const CONFIG = {
   listenTimeoutMs: 12000, // maximale Zuhördauer pro Versuch
 };
 const TEST_MODE = new URLSearchParams(location.search).has('test');
+// iPad meldet sich mit "Desktop-Website anfordern" als Mac → zusätzlich Touch prüfen
+const IS_IOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
+  || (/Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints > 1);
 
 /* ---------------- Hilfsfunktionen ---------------- */
 const $ = (sel) => document.querySelector(sel);
@@ -195,6 +198,7 @@ const Sound = {
   },
   tone(freq, dur, { type = 'sine', vol = 0.06, delay = 0, slideTo = null } = {}) {
     if (!this.ctx) return;
+    if (this.ctx.state === 'suspended') this.ctx.resume?.();
     const t0 = this.ctx.currentTime + delay;
     const osc = this.ctx.createOscillator();
     const gain = this.ctx.createGain();
@@ -306,10 +310,35 @@ const Speech = {
   async listen() {
     if (TEST_MODE) return this._listenText();
     await this._waitIdle();
-    await sleep(200);
-    Sound.listen();
-    await sleep(260); // Signalton nicht mit aufnehmen
+    if (IS_IOS) {
+      // iPad/iPhone: Audio-Sitzung freigeben, kein Signalton (blockiert sonst das Mikrofon)
+      try { speechSynthesis.cancel(); } catch { /* egal */ }
+      try { await Sound.ctx?.suspend?.(); } catch { /* egal */ }
+      await sleep(350);
+    } else {
+      await sleep(200);
+      Sound.listen();
+      await sleep(260); // Signalton nicht mit aufnehmen
+    }
 
+    if (!this.tapMode) return this._recognize();
+
+    // Tippen & Sprechen: Erkennung startet direkt im Tipp-Ereignis (nötig in Safari auf iOS)
+    UI.setMic('tap');
+    UI.heard('', false);
+    return new Promise((resolve) => {
+      const mic = $('#mic');
+      const go = (e) => {
+        e.preventDefault();
+        mic.removeEventListener('click', go);
+        resolve(this._recognize());
+      };
+      mic.addEventListener('click', go);
+    });
+  },
+
+  /** Startet die Erkennung sofort (synchron) und liefert {alts, error, quick}. */
+  _recognize() {
     return new Promise((resolve) => {
       const Rec = window.SpeechRecognition || window.webkitSpeechRecognition;
       const rec = new Rec();
@@ -317,6 +346,10 @@ const Speech = {
       rec.continuous = false;
       rec.interimResults = true;
       rec.maxAlternatives = 5;
+
+      const t0 = Date.now();
+      const log = ['Start'];
+      const diag = (step) => { log.push(step); UI.diag(`Spracherkennung: ${log.join(' → ')}`); };
 
       let finalAlts = null;
       let interim = '';
@@ -331,9 +364,15 @@ const Speech = {
         let alts = finalAlts;
         if (!alts?.length && interim.trim()) alts = [interim.trim()];
         if (alts?.length) UI.heard(alts[0], false);
-        resolve(alts?.length ? { alts } : { alts: null, error });
+        else UI.heard(error ? `Nichts verstanden (${error})` : 'Nichts verstanden', false);
+        diag(`Ende (${((Date.now() - t0) / 1000).toFixed(1)} s)`);
+        resolve(alts?.length
+          ? { alts }
+          : { alts: null, error, quick: Date.now() - t0 < 1500 });
       };
 
+      rec.onaudiostart = () => diag('Mikro an');
+      rec.onspeechstart = () => diag('Sprache');
       rec.onresult = (e) => {
         let live = '';
         for (let i = e.resultIndex; i < e.results.length; i++) {
@@ -345,9 +384,16 @@ const Speech = {
           }
         }
         if (live) { interim = live; UI.heard(live, true); }
-        if (finalAlts) { try { rec.stop(); } catch { /* bereits beendet */ } }
+        if (finalAlts) {
+          diag('Ergebnis');
+          try { rec.stop(); } catch { /* bereits beendet */ }
+        } else if (IS_IOS && live) {
+          // Safari markiert Ergebnisse oft nie als final → nach kurzer Pause selbst beenden
+          clearTimeout(rec._pause);
+          rec._pause = setTimeout(() => { try { rec.stop(); } catch { /* egal */ } }, 1400);
+        }
       };
-      rec.onerror = (e) => { error = e.error; };
+      rec.onerror = (e) => { error = e.error; diag(`Fehler: ${e.error}`); };
       rec.onend = finish;
 
       const timer = setTimeout(() => {
@@ -357,10 +403,12 @@ const Speech = {
 
       UI.setMic('listening');
       UI.heard('', false);
+      UI.diag('Spracherkennung: Start');
       try {
         rec.start();
       } catch (err) {
         error = 'start-failed';
+        diag(`Startfehler: ${err.name || err.message}`);
         finish();
       }
     });
@@ -406,14 +454,25 @@ async function ask(prompt, { retryPrompt = prompt, maxTries = Infinity } = {}) {
   for (let tries = 1; ; tries++) {
     const { alts, error } = await Speech.listen();
 
+    if (alts?.length) { Speech.fails = 0; return alts; }
+
+    // iPad/iPhone: klappt das automatische Zuhören nicht, auf "Tippen & Sprechen" umschalten
+    if (IS_IOS && !Speech.tapMode && !TEST_MODE) {
+      Speech.fails = (Speech.fails || 0) + 1;
+      if (Speech.fails >= 1 || ['not-allowed', 'service-not-allowed', 'start-failed'].includes(error)) {
+        Speech.tapMode = true;
+        tries--; // zählt nicht als Fehlversuch
+        await Speech.speak(`Auf diesem Gerät musst du kurz auf das Mikrofon tippen, bevor du sprichst. ${retryPrompt}`);
+        continue;
+      }
+    }
+
     if (['not-allowed', 'service-not-allowed'].includes(error)) {
       throw new FatalError('Der Zugriff auf Mikrofon oder Spracherkennung wurde verweigert. Chrome: Schloss-Symbol in der Adressleiste. iPad: Einstellungen → Safari → Mikrofon erlauben und unter Allgemein → Tastatur die Diktierfunktion einschalten. Danach neu starten.');
     }
     if (error === 'audio-capture') {
       throw new FatalError('Es wurde kein Mikrofon gefunden. Bitte schließe ein Mikrofon an und starte neu.');
     }
-    if (alts?.length) return alts;
-
     if (error === 'network') {
       networkErrors++;
       if (networkErrors >= 3) {
@@ -474,11 +533,12 @@ const UI = {
       s.classList.toggle('active', s.id === `screen-${name}`));
   },
   setMic(mode) {
-    const labels = { idle: 'Bereit', speaking: 'Spricht …', listening: 'Hört zu …' };
+    const labels = { idle: 'Bereit', speaking: 'Spricht …', listening: 'Hört zu …', tap: 'Tippen & sprechen' };
     $('#mic').dataset.state = mode;
     $('#mic-label').textContent = labels[mode] || '';
   },
   caption(text) { $('#caption').textContent = text; },
+  diag(text) { const el = $('#diag'); if (el) el.textContent = text; },
   heard(text, interim) {
     const el = $('#heard');
     el.textContent = text ? `Verstanden: „${text}“` : '';
