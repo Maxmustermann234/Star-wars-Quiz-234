@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Star-Wars-Quiz · Episode IV–VI</title>
+  <meta name="description" content="Sprachgesteuertes Star-Wars-Quiz für 1 bis 4 Spieler zu Episode IV bis VI.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Exo+2:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <canvas id="stars" aria-hidden="true"></canvas>
+  <div class="nebula" aria-hidden="true"></div>
+
+  <main id="app">
+    <!-- ============ START ============ -->
+    <section id="screen-start" class="screen active" aria-labelledby="title">
+      <div class="start-inner">
+        <p class="kicker">Ein Quiz aus einer weit, weit entfernten Galaxis</p>
+        <h1 id="title" class="title">
+          <span class="title-outline">Star Wars</span>
+          <span class="title-fill">Quiz</span>
+        </h1>
+        <p class="subtitle">Episode IV · V · VI</p>
+
+        <ul class="howto">
+          <li><b>1–4 Spieler</b> sagen nacheinander ihren Namen – mit <q>fertig</q> geht's los.</li>
+          <li><b>6 Fragen</b> pro Spieler. Freie Antwort richtig: <b>5 Punkte</b>.</li>
+          <li>Keine Ahnung? Sag <q>weiß nicht</q> – dann wählst du aus <b>A, B, C</b> für <b>2 Punkte</b>.</li>
+          <li>Frage nicht verstanden? Sag <q>wiederholen</q>.</li>
+        </ul>
+
+        <button id="btn-start" class="saber-btn" type="button" disabled>Spiel starten</button>
+        <p id="start-status" class="start-status" role="status">Lade Fragen …</p>
+      </div>
+    </section>
+
+    <!-- ============ SPIEL ============ -->
+    <section id="screen-game" class="screen" aria-live="polite">
+      <header class="hud">
+        <div class="panel saber player-panel">
+          <span class="label">Am Zug</span>
+          <span id="current-player" class="current-player">–</span>
+          <span id="progress" class="progress"></span>
+        </div>
+
+        <div id="mic" class="mic" data-state="idle" aria-live="polite">
+          <div class="mic-ring">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="9" y="2.5" width="6" height="11.5" rx="3"/>
+              <path d="M5.5 11a6.5 6.5 0 0 0 13 0" fill="none"/>
+              <path d="M12 17.5V21M8.5 21h7" fill="none"/>
+            </svg>
+          </div>
+          <span id="mic-label" class="mic-label">Bereit</span>
+        </div>
+      </header>
+
+      <div class="main-grid">
+        <article class="panel saber question-card">
+          <div id="phase-label" class="phase">Anmeldung</div>
+          <h2 id="question-text" class="question-text"></h2>
+
+          <ol id="options" class="options" hidden>
+            <li data-letter="A"><b>A</b><span class="opt-text"></span></li>
+            <li data-letter="B"><b>B</b><span class="opt-text"></span></li>
+            <li data-letter="C"><b>C</b><span class="opt-text"></span></li>
+          </ol>
+
+          <div id="feedback" class="feedback" role="status"></div>
+        </article>
+
+        <aside class="panel saber saber-green scoreboard" aria-label="Punktestand">
+          <h3>Punktestand</h3>
+          <ul id="scores" class="scores"></ul>
+        </aside>
+      </div>
+
+      <footer class="captions">
+        <div id="caption" class="caption"></div>
+        <div id="heard" class="heard"></div>
+        <form id="test-input" class="test-input" hidden autocomplete="off">
+          <label for="test-text">Testmodus – Antwort tippen:</label>
+          <input id="test-text" type="text" placeholder="z. B. Yoda, weiß nicht, B, fertig …">
+          <button type="submit" class="saber-btn small">Senden</button>
+        </form>
+      </footer>
+    </section>
+
+    <!-- ============ ENDSTAND ============ -->
+    <section id="screen-results" class="screen">
+      <div class="results-inner panel saber saber-purple">
+        <p class="kicker">Alle Fragen gespielt</p>
+        <h2 class="results-title">Endstand</h2>
+        <ol id="results-list" class="results-list"></ol>
+        <p id="results-note" class="results-note"></p>
+      </div>
+    </section>
+
+    <!-- ============ SIEGER ============ -->
+    <section id="screen-victory" class="screen">
+      <div class="victory-inner">
+        <p class="kicker">Der Sieg geht an</p>
+        <h2 id="winner-name" class="winner-name">–</h2>
+        <p id="winner-score" class="winner-score"></p>
+      </div>
+
+      <div class="flight" aria-hidden="true">
+        <div class="flight-bob">
+          <!-- Eigenes Design: schwerer Container-Frachter "Kargo-Schlepper" -->
+          <svg class="freighter" viewBox="0 0 540 200" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="hull" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#e3e7ee"/>
+                <stop offset=".5" stop-color="#9aa3b2"/>
+                <stop offset="1" stop-color="#434b5a"/>
+              </linearGradient>
+              <linearGradient id="hullDark" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#8b94a4"/>
+                <stop offset="1" stop-color="#262b35"/>
+              </linearGradient>
+              <linearGradient id="rust" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#d98a4b"/>
+                <stop offset="1" stop-color="#7a3f1d"/>
+              </linearGradient>
+              <linearGradient id="ochre" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#e6c25a"/>
+                <stop offset="1" stop-color="#8a6a1c"/>
+              </linearGradient>
+              <linearGradient id="teal" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#7fb3b0"/>
+                <stop offset="1" stop-color="#2f5552"/>
+              </linearGradient>
+              <linearGradient id="flame" x1="1" y1="0" x2="0" y2="0">
+                <stop offset="0" stop-color="#ffffff"/>
+                <stop offset=".2" stop-color="#9fe9ff"/>
+                <stop offset=".6" stop-color="#2a8cff" stop-opacity=".6"/>
+                <stop offset="1" stop-color="#2a8cff" stop-opacity="0"/>
+              </linearGradient>
+              <radialGradient id="nozzle">
+                <stop offset="0" stop-color="#ffffff"/>
+                <stop offset=".45" stop-color="#8fe3ff"/>
+                <stop offset="1" stop-color="#1e6bff" stop-opacity="0"/>
+              </radialGradient>
+              <linearGradient id="glass" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#d6fbff"/>
+                <stop offset="1" stop-color="#2bb6d6"/>
+              </linearGradient>
+            </defs>
+
+            <!-- Antriebsstrahlen -->
+            <g class="exhaust">
+              <path d="M118 74 L4 82 L118 90 Z" fill="url(#flame)"/>
+              <path d="M118 96 L0 104 L118 112 Z" fill="url(#flame)"/>
+              <path d="M118 118 L4 126 L118 134 Z" fill="url(#flame)"/>
+            </g>
+
+            <!-- Triebwerksblock -->
+            <rect x="110" y="64" width="46" height="80" rx="8" fill="url(#hullDark)" stroke="#1b1f27" stroke-width="2"/>
+            <g class="nozzles">
+              <circle cx="116" cy="82" r="9" fill="url(#nozzle)"/>
+              <circle cx="116" cy="104" r="9" fill="url(#nozzle)"/>
+              <circle cx="116" cy="126" r="9" fill="url(#nozzle)"/>
+            </g>
+
+            <!-- Hauptrumpf (Rückgrat) -->
+            <path d="M150 84 L410 78 L478 96 L490 104 L478 112 L410 130 L150 124 Z"
+                  fill="url(#hull)" stroke="#262b35" stroke-width="2"/>
+            <path d="M160 104 H470" stroke="#5b6475" stroke-width="1.5"/>
+            <path d="M200 86 V122 M260 85 V123 M320 83 V125 M380 81 V127" stroke="#6b7485" stroke-width="1"/>
+
+            <!-- Frachtcontainer oben -->
+            <g stroke="#1b1f27" stroke-width="1.5">
+              <rect x="176" y="60" width="50" height="22" rx="2" fill="url(#rust)"/>
+              <rect x="230" y="58" width="50" height="24" rx="2" fill="url(#teal)"/>
+              <rect x="284" y="56" width="50" height="25" rx="2" fill="url(#ochre)"/>
+              <rect x="338" y="58" width="44" height="22" rx="2" fill="url(#rust)"/>
+            </g>
+            <!-- Frachtcontainer unten -->
+            <g stroke="#1b1f27" stroke-width="1.5">
+              <rect x="190" y="126" width="56" height="20" rx="2" fill="url(#ochre)"/>
+              <rect x="250" y="127" width="56" height="21" rx="2" fill="url(#rust)"/>
+              <rect x="310" y="127" width="52" height="20" rx="2" fill="url(#teal)"/>
+            </g>
+            <!-- Containerrippen -->
+            <path d="M188 62 V80 M200 62 V80 M212 62 V80 M242 60 V80 M254 60 V80 M266 60 V80 M296 58 V79 M308 58 V79 M320 58 V79 M350 60 V78 M362 60 V78 M204 128 V144 M218 128 V144 M232 128 V144 M264 129 V146 M278 129 V146 M292 129 V146 M324 129 V145 M338 129 V145"
+                  stroke="rgba(0,0,0,.35)" stroke-width="1.2"/>
+
+            <!-- Brückenturm hinten -->
+            <path d="M152 84 L166 38 L232 34 L244 84 Z" fill="url(#hull)" stroke="#262b35" stroke-width="2"/>
+            <rect x="172" y="44" width="58" height="9" rx="3" fill="url(#glass)" class="windows"/>
+            <path d="M170 62 H236 M168 72 H240" stroke="#6b7485" stroke-width="1"/>
+            <!-- Antenne + Sensormast -->
+            <path d="M198 34 V12 M198 18 L214 14" stroke="#c8ced8" stroke-width="2" fill="none"/>
+            <circle cx="198" cy="11" r="3.5" class="beacon beacon-red"/>
+            <ellipse cx="222" cy="30" rx="10" ry="4" fill="#9aa3b2" stroke="#262b35" stroke-width="1.5"/>
+
+            <!-- Bug: Andockklammer -->
+            <path d="M478 96 L520 92 L524 98 L490 104 L524 110 L520 116 L478 112" fill="url(#hullDark)" stroke="#1b1f27" stroke-width="1.5"/>
+            <circle cx="466" cy="104" r="5" fill="url(#glass)"/>
+
+            <!-- Positionslichter -->
+            <circle cx="520" cy="94" r="3" class="beacon beacon-red"/>
+            <circle cx="520" cy="114" r="3" class="beacon beacon-green"/>
+            <circle cx="384" cy="128" r="2.5" class="beacon beacon-white"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="victory-footer">
+        <ol id="victory-scores" class="victory-scores"></ol>
+        <button id="btn-again" class="saber-btn" type="button">Neues Spiel</button>
+      </div>
+    </section>
+
+    <!-- ============ FEHLER ============ -->
+    <div id="fatal" class="fatal" hidden role="alertdialog" aria-labelledby="fatal-title">
+      <div class="panel saber saber-red fatal-box">
+        <h2 id="fatal-title">Störung im Hyperantrieb</h2>
+        <p id="fatal-text"></p>
+        <button id="btn-retry" class="saber-btn" type="button">Neu starten</button>
+      </div>
+    </div>
+  </main>
+
+  <script src="game.js"></script>
+</body>
+</html>
