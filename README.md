@@ -63,7 +63,7 @@ Danach im Browser <http://localhost:8000> öffnen.
 | `index.html` | Aufbau der Bildschirme (Start, Spiel, Endstand, Sieger), Frachter als SVG |
 | `style.css` | Sternenhimmel-Look, gelbe Schrift, Lichtschwert-Rahmen, Animationen |
 | `game.js` | Spiellogik, Sprachausgabe, Eingabe per Tastatur/Mikrofon, tolerante Antwortauswertung, Sternenfeld |
-| `questions.json` | 50 Fragen und 7 Stichfragen |
+| `questions.json` | 100 Fragen und 7 Stichfragen |
 | `fonts/` | Schriften Orbitron und Exo 2 (lokal, SIL Open Font License 1.1) |
 
 ## Datenschutz
@@ -91,11 +91,13 @@ Danach im Browser <http://localhost:8000> öffnen.
 - `answer` ist die richtige Antwort. Das Spiel liest sie vor.
 - `alternatives` sind weitere akzeptierte Schreibweisen und typische Erkennungsfehler.
 - `options` und `correct` gehören zur Auswahlrunde mit A, B und C.
+- `"strict": true` (optional) schaltet die Tippfehler-Toleranz für diese Frage ab. Das ist sinnvoll, wenn sich richtige und falsche Antworten nur in einem Zeichen unterscheiden, z. B. AT-AT/AT-ST oder X-Wing/Y-Wing.
 
 So wertet das Spiel freie Antworten aus (getippt und gesprochen):
 
 - Groß- und Kleinschreibung, Umlaute, Satzzeichen, Artikel und Füllwörter wie „ich glaube“ zählen nicht.
-- Zahlwörter werden in Ziffern umgewandelt.
+- Zahlwörter werden in Ziffern umgewandelt. **Zahlen müssen immer exakt stimmen**, also ist „500 Jahre“ nicht „900 Jahre“.
 - Kleine Erkennungsfehler sind erlaubt (Levenshtein-Distanz, abhängig von der Wortlänge).
+- In der A/B/C-Runde zählt ein exakt genannter Optionstext vor dem Buchstaben. „C-3PO“ wählt also die Option C-3PO, nicht den Buchstaben C.
 
 Für ein Spiel mit 4 Spielern braucht ihr mindestens 24 normale Fragen.

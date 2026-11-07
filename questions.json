@@ -3,402 +3,1786 @@
     {
       "question": "Auf welchem Wüstenplaneten wächst Luke Skywalker auf?",
       "answer": "Tatooine",
-      "alternatives": ["tatuin", "tattooine", "tatoine", "tatuine", "tattuin"],
-      "options": { "A": "Hoth", "B": "Tatooine", "C": "Dagobah" },
+      "alternatives": [
+        "tatuin",
+        "tattooine",
+        "tatoine",
+        "tatuine",
+        "tattuin"
+      ],
+      "options": {
+        "A": "Hoth",
+        "B": "Tatooine",
+        "C": "Dagobah"
+      },
       "correct": "B"
     },
     {
       "question": "Wie heißt der Wookiee, der als Co-Pilot mit Han Solo fliegt?",
       "answer": "Chewbacca",
-      "alternatives": ["chewie", "chewbaka", "tschubakka", "tschewbakka", "schubakka", "tschewie", "chewbacker"],
-      "options": { "A": "Chewbacca", "B": "Greedo", "C": "Wicket" },
+      "alternatives": [
+        "chewie",
+        "chewbaka",
+        "tschubakka",
+        "tschewbakka",
+        "schubakka",
+        "tschewie",
+        "chewbacker"
+      ],
+      "options": {
+        "A": "Chewbacca",
+        "B": "Greedo",
+        "C": "Wicket"
+      },
       "correct": "A"
     },
     {
       "question": "Wie heißt das Raumschiff von Han Solo?",
       "answer": "Millennium Falke",
-      "alternatives": ["millenium falke", "millennium falcon", "millenium falcon", "falke", "der falke", "milenium falke"],
-      "options": { "A": "Sternzerstörer", "B": "X-Wing", "C": "Millennium Falke" },
+      "alternatives": [
+        "millenium falke",
+        "millennium falcon",
+        "millenium falcon",
+        "falke",
+        "der falke",
+        "milenium falke"
+      ],
+      "options": {
+        "A": "Sternzerstörer",
+        "B": "X-Wing",
+        "C": "Millennium Falke"
+      },
       "correct": "C"
     },
     {
       "question": "Welcher Jedi-Meister bildet Luke auf Dagobah aus?",
       "answer": "Yoda",
-      "alternatives": ["joda", "meister yoda", "jodah", "yodah"],
-      "options": { "A": "Obi-Wan Kenobi", "B": "Yoda", "C": "Lando Calrissian" },
+      "alternatives": [
+        "joda",
+        "meister yoda",
+        "jodah",
+        "yodah"
+      ],
+      "options": {
+        "A": "Obi-Wan Kenobi",
+        "B": "Yoda",
+        "C": "Lando Calrissian"
+      },
       "correct": "B"
     },
     {
       "question": "Wie heißt Prinzessin Leias Heimatplanet, der vom Todesstern zerstört wird?",
       "answer": "Alderaan",
-      "alternatives": ["alderan", "alderahn", "alderaan planet", "aldaran"],
-      "options": { "A": "Alderaan", "B": "Yavin", "C": "Bespin" },
+      "alternatives": [
+        "alderan",
+        "alderahn",
+        "alderaan planet",
+        "aldaran"
+      ],
+      "options": {
+        "A": "Alderaan",
+        "B": "Yavin",
+        "C": "Bespin"
+      },
       "correct": "A"
     },
     {
       "question": "Welche Farbe hat Lukes Lichtschwert in Die Rückkehr der Jedi-Ritter?",
       "answer": "Grün",
-      "alternatives": ["gruen", "grun", "grünes", "grüne", "green"],
-      "options": { "A": "Blau", "B": "Rot", "C": "Grün" },
+      "alternatives": [
+        "gruen",
+        "grun",
+        "grünes",
+        "grüne",
+        "green"
+      ],
+      "options": {
+        "A": "Blau",
+        "B": "Rot",
+        "C": "Grün"
+      },
       "correct": "C"
     },
     {
       "question": "Wer ist Luke Skywalkers Vater?",
       "answer": "Darth Vader",
-      "alternatives": ["vader", "anakin", "anakin skywalker", "dart vader", "darth vadar", "darthvader"],
-      "options": { "A": "Obi-Wan Kenobi", "B": "Darth Vader", "C": "Onkel Owen" },
+      "alternatives": [
+        "vader",
+        "anakin",
+        "anakin skywalker",
+        "dart vader",
+        "darth vadar",
+        "darthvader"
+      ],
+      "options": {
+        "A": "Obi-Wan Kenobi",
+        "B": "Darth Vader",
+        "C": "Onkel Owen"
+      },
       "correct": "B"
     },
     {
       "question": "Wie heißt der goldene Protokolldroide, der über sechs Millionen Kommunikationsformen beherrscht?",
       "answer": "C-3PO",
-      "alternatives": ["c3po", "c 3 po", "c3 po", "3po", "dreipeo", "zitripio", "sitripio", "see threepio", "c dreipo", "c 3 p o", "zeh 3 po"],
-      "options": { "A": "R2-D2", "B": "C-3PO", "C": "IG-88" },
+      "alternatives": [
+        "c3po",
+        "c 3 po",
+        "c3 po",
+        "3po",
+        "dreipeo",
+        "zitripio",
+        "sitripio",
+        "see threepio",
+        "c dreipo",
+        "c 3 p o",
+        "zeh 3 po"
+      ],
+      "options": {
+        "A": "R2-D2",
+        "B": "C-3PO",
+        "C": "IG-88"
+      },
       "correct": "B"
     },
     {
       "question": "Welcher kleine Astromech-Droide trägt Leias geheime Botschaft für Obi-Wan?",
       "answer": "R2-D2",
-      "alternatives": ["r2d2", "r2 d2", "r 2 d 2", "artoo", "erzweidezwei", "r2", "er 2 de 2", "r 2"],
-      "options": { "A": "R2-D2", "B": "C-3PO", "C": "R5-D4" },
+      "alternatives": [
+        "r2d2",
+        "r2 d2",
+        "r 2 d 2",
+        "artoo",
+        "erzweidezwei",
+        "r2",
+        "er 2 de 2",
+        "r 2"
+      ],
+      "options": {
+        "A": "R2-D2",
+        "B": "C-3PO",
+        "C": "R5-D4"
+      },
       "correct": "A"
     },
     {
       "question": "Auf welchem Eisplaneten versteckt sich die Rebellenbasis zu Beginn von Das Imperium schlägt zurück?",
       "answer": "Hoth",
-      "alternatives": ["hot", "hod", "hott", "planet hoth", "hood"],
-      "options": { "A": "Hoth", "B": "Endor", "C": "Tatooine" },
+      "alternatives": [
+        "hot",
+        "hod",
+        "hott",
+        "planet hoth",
+        "hood"
+      ],
+      "options": {
+        "A": "Hoth",
+        "B": "Endor",
+        "C": "Tatooine"
+      },
       "correct": "A"
     },
     {
       "question": "Wie heißt die schwebende Stadt über dem Gasplaneten Bespin?",
       "answer": "Wolkenstadt",
-      "alternatives": ["cloud city", "wolken stadt", "cloudcity"],
-      "options": { "A": "Mos Eisley", "B": "Wolkenstadt", "C": "Sternenstadt" },
+      "alternatives": [
+        "cloud city",
+        "wolken stadt",
+        "cloudcity"
+      ],
+      "options": {
+        "A": "Mos Eisley",
+        "B": "Wolkenstadt",
+        "C": "Sternenstadt"
+      },
       "correct": "B"
     },
     {
       "question": "Welcher alte Freund von Han Solo liefert die Helden in Episode fünf zunächst an Darth Vader aus?",
       "answer": "Lando Calrissian",
-      "alternatives": ["lando", "calrissian", "lando kalrissian", "landau", "lando calrisian"],
-      "options": { "A": "Lando Calrissian", "B": "Boba Fett", "C": "Wedge Antilles" },
+      "alternatives": [
+        "lando",
+        "calrissian",
+        "lando kalrissian",
+        "landau",
+        "lando calrisian"
+      ],
+      "options": {
+        "A": "Lando Calrissian",
+        "B": "Boba Fett",
+        "C": "Wedge Antilles"
+      },
       "correct": "A"
     },
     {
       "question": "Auf welchem Waldmond spielt die große Schlacht in Die Rückkehr der Jedi-Ritter?",
       "answer": "Endor",
-      "alternatives": ["endo", "endor mond", "waldmond endor", "endur", "enter"],
-      "options": { "A": "Yavin 4", "B": "Dagobah", "C": "Endor" },
+      "alternatives": [
+        "endo",
+        "endor mond",
+        "waldmond endor",
+        "endur",
+        "enter"
+      ],
+      "options": {
+        "A": "Yavin 4",
+        "B": "Dagobah",
+        "C": "Endor"
+      },
       "correct": "C"
     },
     {
       "question": "Welcher Kopfgeldjäger bringt den eingefrorenen Han Solo zu Jabba?",
       "answer": "Boba Fett",
-      "alternatives": ["boba", "bobafett", "bober fett", "bobafet", "boba fet"],
-      "options": { "A": "Greedo", "B": "Boba Fett", "C": "Bossk" },
+      "alternatives": [
+        "boba",
+        "bobafett",
+        "bober fett",
+        "bobafet",
+        "boba fet"
+      ],
+      "options": {
+        "A": "Greedo",
+        "B": "Boba Fett",
+        "C": "Bossk"
+      },
       "correct": "B"
     },
     {
       "question": "In welchem Material wird Han Solo in der Wolkenstadt eingefroren?",
       "answer": "Karbonit",
-      "alternatives": ["carbonit", "carbonite", "karbonid", "carbonid", "karbon"],
-      "options": { "A": "Karbonit", "B": "Eis", "C": "Durastahl" },
+      "alternatives": [
+        "carbonit",
+        "carbonite",
+        "karbonid",
+        "carbonid",
+        "karbon"
+      ],
+      "options": {
+        "A": "Karbonit",
+        "B": "Eis",
+        "C": "Durastahl"
+      },
       "correct": "A"
     },
     {
       "question": "Wie heißt der Gangsterboss auf Tatooine, in dessen Palast der eingefrorene Han Solo an der Wand hängt?",
       "answer": "Jabba",
-      "alternatives": ["jabba der hutte", "jaba", "dschabba", "jabba the hutt", "jabber", "jabba hutt"],
-      "options": { "A": "Bib Fortuna", "B": "Greedo", "C": "Jabba" },
+      "alternatives": [
+        "jabba der hutte",
+        "jaba",
+        "dschabba",
+        "jabba the hutt",
+        "jabber",
+        "jabba hutt"
+      ],
+      "options": {
+        "A": "Bib Fortuna",
+        "B": "Greedo",
+        "C": "Jabba"
+      },
       "correct": "C"
     },
     {
       "question": "Welchen grünhäutigen Kopfgeldjäger erschießt Han Solo in der Cantina von Mos Eisley?",
       "answer": "Greedo",
-      "alternatives": ["gredo", "grido", "griedo", "greedow"],
-      "options": { "A": "Greedo", "B": "Bossk", "C": "Dengar" },
+      "alternatives": [
+        "gredo",
+        "grido",
+        "griedo",
+        "greedow"
+      ],
+      "options": {
+        "A": "Greedo",
+        "B": "Bossk",
+        "C": "Dengar"
+      },
       "correct": "A"
     },
     {
       "question": "In welcher Raumhafenstadt auf Tatooine treffen Luke und Obi-Wan zum ersten Mal auf Han Solo?",
       "answer": "Mos Eisley",
-      "alternatives": ["mos eisly", "moss eisley", "mos aisley", "moseisley", "mos eisli", "mos isley"],
-      "options": { "A": "Anchorhead", "B": "Mos Eisley", "C": "Wolkenstadt" },
+      "alternatives": [
+        "mos eisly",
+        "moss eisley",
+        "mos aisley",
+        "moseisley",
+        "mos eisli",
+        "mos isley"
+      ],
+      "options": {
+        "A": "Anchorhead",
+        "B": "Mos Eisley",
+        "C": "Wolkenstadt"
+      },
       "correct": "B"
     },
     {
       "question": "Unter welchem Namen kennt Luke den alten Einsiedler Obi-Wan Kenobi zunächst?",
       "answer": "Ben",
-      "alternatives": ["ben kenobi", "alter ben", "der alte ben", "old ben"],
-      "options": { "A": "Ben", "B": "Owen", "C": "Biggs" },
+      "alternatives": [
+        "ben kenobi",
+        "alter ben",
+        "der alte ben",
+        "old ben"
+      ],
+      "options": {
+        "A": "Ben",
+        "B": "Owen",
+        "C": "Biggs"
+      },
       "correct": "A"
     },
     {
       "question": "Wie heißt der Großmoff, der in Episode vier den Todesstern befehligt?",
       "answer": "Tarkin",
-      "alternatives": ["grossmoff tarkin", "großmoff tarkin", "tarkien", "tarking", "tarkinn", "moff tarkin"],
-      "options": { "A": "Motti", "B": "Piett", "C": "Tarkin" },
+      "alternatives": [
+        "grossmoff tarkin",
+        "großmoff tarkin",
+        "tarkien",
+        "tarking",
+        "tarkinn",
+        "moff tarkin"
+      ],
+      "options": {
+        "A": "Motti",
+        "B": "Piett",
+        "C": "Tarkin"
+      },
       "correct": "C"
     },
     {
       "question": "Wie heißt die riesige Kampfstation des Imperiums, die ganze Planeten zerstören kann?",
       "answer": "Todesstern",
-      "alternatives": ["todes stern", "death star", "der todesstern"],
-      "options": { "A": "Sternzerstörer", "B": "Todesstern", "C": "Exekutor" },
+      "alternatives": [
+        "todes stern",
+        "death star",
+        "der todesstern"
+      ],
+      "options": {
+        "A": "Sternzerstörer",
+        "B": "Todesstern",
+        "C": "Exekutor"
+      },
       "correct": "B"
     },
     {
       "question": "Wie heißt Lukes Onkel, bei dem er auf Tatooine aufwächst?",
       "answer": "Owen",
-      "alternatives": ["onkel owen", "owen lars", "oven", "ouen", "owan"],
-      "options": { "A": "Owen", "B": "Biggs", "C": "Wedge" },
+      "alternatives": [
+        "onkel owen",
+        "owen lars",
+        "oven",
+        "ouen",
+        "owan"
+      ],
+      "options": {
+        "A": "Owen",
+        "B": "Biggs",
+        "C": "Wedge"
+      },
       "correct": "A"
     },
     {
       "question": "Mit welchem Rufzeichen fliegt Luke beim Angriff auf den ersten Todesstern?",
       "answer": "Rot Fünf",
-      "alternatives": ["rot 5", "rot5", "red five", "red 5", "rote 5", "rot fuenf"],
-      "options": { "A": "Gold Eins", "B": "Rot Fünf", "C": "Blau Drei" },
+      "alternatives": [
+        "rot 5",
+        "rot5",
+        "red five",
+        "red 5",
+        "rote 5",
+        "rot fuenf"
+      ],
+      "options": {
+        "A": "Gold Eins",
+        "B": "Rot Fünf",
+        "C": "Blau Drei"
+      },
       "correct": "B"
     },
     {
       "question": "Mit welchem Jägertyp greift Luke den ersten Todesstern an?",
       "answer": "X-Wing",
-      "alternatives": ["x wing", "xwing", "x flügler", "x fluegler", "ix wing", "iks wing", "x winge"],
-      "options": { "A": "TIE-Jäger", "B": "Y-Wing", "C": "X-Wing" },
-      "correct": "C"
+      "alternatives": [
+        "x wing",
+        "xwing",
+        "x flügler",
+        "x fluegler",
+        "ix wing",
+        "iks wing",
+        "x winge"
+      ],
+      "options": {
+        "A": "TIE-Jäger",
+        "B": "Y-Wing",
+        "C": "X-Wing"
+      },
+      "correct": "C",
+      "strict": true
     },
     {
       "question": "Auf welchem Reittier ist Luke auf Hoth unterwegs, bevor er angegriffen wird?",
       "answer": "Tauntaun",
-      "alternatives": ["taun taun", "tontaun", "tauntauns", "tontan", "tantan", "taunton"],
-      "options": { "A": "Bantha", "B": "Tauntaun", "C": "Dewback" },
+      "alternatives": [
+        "taun taun",
+        "tontaun",
+        "tauntauns",
+        "tontan",
+        "tantan",
+        "taunton"
+      ],
+      "options": {
+        "A": "Bantha",
+        "B": "Tauntaun",
+        "C": "Dewback"
+      },
       "correct": "B"
     },
     {
       "question": "Wie heißen die riesigen vierbeinigen Kampfläufer, die die Rebellenbasis auf Hoth angreifen?",
       "answer": "AT-AT",
-      "alternatives": ["atat", "at at", "a t a t", "ätät", "at at walker", "atat walker"],
-      "options": { "A": "AT-AT", "B": "AT-ST", "C": "TIE-Bomber" },
-      "correct": "A"
+      "alternatives": [
+        "atat",
+        "at at",
+        "a t a t",
+        "ätät",
+        "at at walker",
+        "atat walker"
+      ],
+      "options": {
+        "A": "AT-AT",
+        "B": "AT-ST",
+        "C": "TIE-Bomber"
+      },
+      "correct": "A",
+      "strict": true
     },
     {
       "question": "Welches Monster lebt in der Grube unter Jabbas Thronsaal?",
       "answer": "Rancor",
-      "alternatives": ["rankor", "rancour", "rangor", "rencor", "ranko"],
-      "options": { "A": "Sarlacc", "B": "Wampa", "C": "Rancor" },
+      "alternatives": [
+        "rankor",
+        "rancour",
+        "rangor",
+        "rencor",
+        "ranko"
+      ],
+      "options": {
+        "A": "Sarlacc",
+        "B": "Wampa",
+        "C": "Rancor"
+      },
       "correct": "C"
     },
     {
       "question": "Welches Wesen lauert in der Grube von Carkoon, in die Luke geworfen werden soll?",
       "answer": "Sarlacc",
-      "alternatives": ["sarlack", "sarlak", "sarlac", "sarlag", "sarlacc grube"],
-      "options": { "A": "Sarlacc", "B": "Rancor", "C": "Dianoga" },
+      "alternatives": [
+        "sarlack",
+        "sarlak",
+        "sarlac",
+        "sarlag",
+        "sarlacc grube"
+      ],
+      "options": {
+        "A": "Sarlacc",
+        "B": "Rancor",
+        "C": "Dianoga"
+      },
       "correct": "A"
     },
     {
       "question": "Wer ist Lukes Zwillingsschwester?",
       "answer": "Leia",
-      "alternatives": ["prinzessin leia", "leia organa", "laya", "leya", "lea", "leja"],
-      "options": { "A": "Mon Mothma", "B": "Leia", "C": "Tante Beru" },
+      "alternatives": [
+        "prinzessin leia",
+        "leia organa",
+        "laya",
+        "leya",
+        "lea",
+        "leja"
+      ],
+      "options": {
+        "A": "Mon Mothma",
+        "B": "Leia",
+        "C": "Tante Beru"
+      },
       "correct": "B"
     },
     {
       "question": "Welcher Rebellen-Admiral mit Fischkopf ruft in der Schlacht um Endor: Es ist eine Falle?",
       "answer": "Ackbar",
-      "alternatives": ["admiral ackbar", "akbar", "ackba", "ackbart", "ak bar", "akba"],
-      "options": { "A": "Ackbar", "B": "Piett", "C": "Ozzel" },
+      "alternatives": [
+        "admiral ackbar",
+        "akbar",
+        "ackba",
+        "ackbart",
+        "ak bar",
+        "akba"
+      ],
+      "options": {
+        "A": "Ackbar",
+        "B": "Piett",
+        "C": "Ozzel"
+      },
       "correct": "A"
     },
     {
       "question": "Wie heißt der Ewok, der sich auf Endor als Erster mit Leia anfreundet?",
       "answer": "Wicket",
-      "alternatives": ["wiket", "wicked", "wikket", "wickett", "wicket w warrick"],
-      "options": { "A": "Teebo", "B": "Paploo", "C": "Wicket" },
+      "alternatives": [
+        "wiket",
+        "wicked",
+        "wikket",
+        "wickett",
+        "wicket w warrick"
+      ],
+      "options": {
+        "A": "Teebo",
+        "B": "Paploo",
+        "C": "Wicket"
+      },
       "correct": "C"
     },
     {
       "question": "Auf welchem Sumpfplaneten lebt Yoda im Exil?",
       "answer": "Dagobah",
-      "alternatives": ["dagoba", "dagobar", "dagobah system", "dagowa"],
-      "options": { "A": "Dagobah", "B": "Endor", "C": "Hoth" },
+      "alternatives": [
+        "dagoba",
+        "dagobar",
+        "dagobah system",
+        "dagowa"
+      ],
+      "options": {
+        "A": "Dagobah",
+        "B": "Endor",
+        "C": "Hoth"
+      },
       "correct": "A"
     },
     {
       "question": "Welche Farbe hat Darth Vaders Lichtschwert?",
       "answer": "Rot",
-      "alternatives": ["rote", "rotes", "red", "rott"],
-      "options": { "A": "Blau", "B": "Grün", "C": "Rot" },
+      "alternatives": [
+        "rote",
+        "rotes",
+        "red",
+        "rott"
+      ],
+      "options": {
+        "A": "Blau",
+        "B": "Grün",
+        "C": "Rot"
+      },
       "correct": "C"
     },
     {
       "question": "Wie heißt der Gasplanet, über dem Lando Calrissians Stadt schwebt?",
       "answer": "Bespin",
-      "alternatives": ["bespinn", "bespien", "bespinne", "bespinnen", "bespinn planet"],
-      "options": { "A": "Bespin", "B": "Yavin", "C": "Alderaan" },
+      "alternatives": [
+        "bespinn",
+        "bespien",
+        "bespinne",
+        "bespinnen",
+        "bespinn planet"
+      ],
+      "options": {
+        "A": "Bespin",
+        "B": "Yavin",
+        "C": "Alderaan"
+      },
       "correct": "A"
     },
     {
       "question": "Wer rettet Luke beim Angriff auf den ersten Todesstern in letzter Sekunde vor Darth Vader?",
       "answer": "Han Solo",
-      "alternatives": ["han", "solo", "hans solo", "hahn solo", "han solo und chewbacca", "hansolo"],
-      "options": { "A": "Wedge", "B": "Biggs", "C": "Han Solo" },
+      "alternatives": [
+        "han",
+        "solo",
+        "hans solo",
+        "hahn solo",
+        "han solo und chewbacca",
+        "hansolo"
+      ],
+      "options": {
+        "A": "Wedge",
+        "B": "Biggs",
+        "C": "Han Solo"
+      },
       "correct": "C"
     },
     {
       "question": "Welches kleine Wüstenvolk verkauft R2-D2 und C-3PO an Lukes Onkel?",
       "answer": "Jawas",
-      "alternatives": ["jawa", "dschawas", "javas", "dschawa", "jawahs"],
-      "options": { "A": "Ewoks", "B": "Jawas", "C": "Tusken" },
+      "alternatives": [
+        "jawa",
+        "dschawas",
+        "javas",
+        "dschawa",
+        "jawahs"
+      ],
+      "options": {
+        "A": "Ewoks",
+        "B": "Jawas",
+        "C": "Tusken"
+      },
       "correct": "B"
     },
     {
       "question": "Von welchem Volk wird Luke im Jundland-Ödland überfallen, bevor Obi-Wan ihn rettet?",
       "answer": "Sandleute",
-      "alternatives": ["tusken", "tusken räuber", "tuskenräuber", "sandvolk", "sandmenschen", "tusken raider", "sandleuten", "tuskens"],
-      "options": { "A": "Sandleute", "B": "Jawas", "C": "Gamorreaner" },
+      "alternatives": [
+        "tusken",
+        "tusken räuber",
+        "tuskenräuber",
+        "sandvolk",
+        "sandmenschen",
+        "tusken raider",
+        "sandleuten",
+        "tuskens"
+      ],
+      "options": {
+        "A": "Sandleute",
+        "B": "Jawas",
+        "C": "Gamorreaner"
+      },
       "correct": "A"
     },
     {
       "question": "Welche Schwachstelle müssen die Rebellen treffen, um den ersten Todesstern zu zerstören?",
       "answer": "Abluftschacht",
-      "alternatives": ["luftschacht", "lüftungsschacht", "thermischer abluftschacht", "thermaler abluftschacht", "schacht", "abgasschacht", "abluftöffnung", "lüftungsrohr", "abluft schacht"],
-      "options": { "A": "Kommandobrücke", "B": "Traktorstrahl-Generator", "C": "Abluftschacht" },
+      "alternatives": [
+        "luftschacht",
+        "lüftungsschacht",
+        "thermischer abluftschacht",
+        "thermaler abluftschacht",
+        "schacht",
+        "abgasschacht",
+        "abluftöffnung",
+        "lüftungsrohr",
+        "abluft schacht"
+      ],
+      "options": {
+        "A": "Kommandobrücke",
+        "B": "Traktorstrahl-Generator",
+        "C": "Abluftschacht"
+      },
       "correct": "C"
     },
     {
       "question": "Welche Hand verliert Luke im Duell mit Darth Vader in der Wolkenstadt?",
       "answer": "Die rechte Hand",
-      "alternatives": ["rechte", "rechts", "rechte hand", "die rechte", "seine rechte"],
-      "options": { "A": "Die linke Hand", "B": "Die rechte Hand", "C": "Gar keine" },
+      "alternatives": [
+        "rechte",
+        "rechts",
+        "rechte hand",
+        "die rechte",
+        "seine rechte"
+      ],
+      "options": {
+        "A": "Die linke Hand",
+        "B": "Die rechte Hand",
+        "C": "Gar keine"
+      },
       "correct": "B"
     },
     {
       "question": "Welches Brettspiel mit Hologramm-Figuren spielen Chewbacca und R2-D2 an Bord des Millennium Falken?",
       "answer": "Holoschach",
-      "alternatives": ["schach", "holo schach", "hologramm schach", "dejarik", "holografisches schach"],
-      "options": { "A": "Sabacc", "B": "Holoschach", "C": "Würfelpoker" },
+      "alternatives": [
+        "schach",
+        "holo schach",
+        "hologramm schach",
+        "dejarik",
+        "holografisches schach"
+      ],
+      "options": {
+        "A": "Sabacc",
+        "B": "Holoschach",
+        "C": "Würfelpoker"
+      },
       "correct": "B"
     },
     {
       "question": "Welches Volk hält C-3PO auf Endor für einen Gott?",
       "answer": "Ewoks",
-      "alternatives": ["ewok", "iwoks", "ewocks", "ewoks stamm", "die ewoks"],
-      "options": { "A": "Ewoks", "B": "Jawas", "C": "Wookiees" },
+      "alternatives": [
+        "ewok",
+        "iwoks",
+        "ewocks",
+        "ewoks stamm",
+        "die ewoks"
+      ],
+      "options": {
+        "A": "Ewoks",
+        "B": "Jawas",
+        "C": "Wookiees"
+      },
       "correct": "A"
     },
     {
       "question": "Welchen Admiral tötet Darth Vader in Episode fünf, weil er die Flotte zu früh aus dem Hyperraum geführt hat?",
       "answer": "Ozzel",
-      "alternatives": ["admiral ozzel", "ossel", "ozel", "osel", "otzel", "oswald"],
-      "options": { "A": "Piett", "B": "Ozzel", "C": "Motti" },
+      "alternatives": [
+        "admiral ozzel",
+        "ossel",
+        "ozel",
+        "osel",
+        "otzel",
+        "oswald"
+      ],
+      "options": {
+        "A": "Piett",
+        "B": "Ozzel",
+        "C": "Motti"
+      },
       "correct": "B"
     },
     {
       "question": "Mit welchen Fluggeräten kämpfen die Rebellen auf Hoth gegen die imperialen Kampfläufer?",
       "answer": "Schneegleiter",
-      "alternatives": ["snowspeeder", "snow speeder", "schnee gleiter", "speeder", "schneespeeder", "schneegleitern"],
-      "options": { "A": "A-Wings", "B": "TIE-Jäger", "C": "Schneegleiter" },
+      "alternatives": [
+        "snowspeeder",
+        "snow speeder",
+        "schnee gleiter",
+        "speeder",
+        "schneespeeder",
+        "schneegleitern"
+      ],
+      "options": {
+        "A": "A-Wings",
+        "B": "TIE-Jäger",
+        "C": "Schneegleiter"
+      },
       "correct": "C"
     },
     {
       "question": "Mit welchen Fahrzeugen rasen Luke und Leia durch die Wälder von Endor?",
       "answer": "Speeder-Bikes",
-      "alternatives": ["speeder bike", "speederbike", "speederbikes", "speeder bikes", "speeder", "düsenschlitten", "duesenschlitten", "speeder baiks"],
-      "options": { "A": "Landgleiter", "B": "Speeder-Bikes", "C": "Tauntauns" },
+      "alternatives": [
+        "speeder bike",
+        "speederbike",
+        "speederbikes",
+        "speeder bikes",
+        "speeder",
+        "düsenschlitten",
+        "duesenschlitten",
+        "speeder baiks"
+      ],
+      "options": {
+        "A": "Landgleiter",
+        "B": "Speeder-Bikes",
+        "C": "Tauntauns"
+      },
       "correct": "B"
     },
     {
       "question": "Wer schleicht sich als Kopfgeldjäger verkleidet in Jabbas Palast, um Han Solo zu befreien?",
       "answer": "Leia",
-      "alternatives": ["prinzessin leia", "leia organa", "laya", "leya", "lea", "leja"],
-      "options": { "A": "Luke", "B": "Leia", "C": "Chewbacca" },
+      "alternatives": [
+        "prinzessin leia",
+        "leia organa",
+        "laya",
+        "leya",
+        "lea",
+        "leja"
+      ],
+      "options": {
+        "A": "Luke",
+        "B": "Leia",
+        "C": "Chewbacca"
+      },
       "correct": "B"
     },
     {
       "question": "In welchem Film erfährt Luke, dass Darth Vader sein Vater ist?",
       "answer": "Das Imperium schlägt zurück",
-      "alternatives": ["imperium schlägt zurück", "imperium", "episode 5", "episode v", "empire strikes back", "teil 5", "imperium schlaegt zurueck"],
-      "options": { "A": "Krieg der Sterne", "B": "Das Imperium schlägt zurück", "C": "Die Rückkehr der Jedi-Ritter" },
+      "alternatives": [
+        "imperium schlägt zurück",
+        "imperium",
+        "episode 5",
+        "episode v",
+        "empire strikes back",
+        "teil 5",
+        "imperium schlaegt zurueck"
+      ],
+      "options": {
+        "A": "Krieg der Sterne",
+        "B": "Das Imperium schlägt zurück",
+        "C": "Die Rückkehr der Jedi-Ritter"
+      },
       "correct": "B"
     },
     {
       "question": "Auf dem Mond welches Gasriesen liegt die Rebellenbasis in Episode vier?",
       "answer": "Yavin",
-      "alternatives": ["yavin 4", "yavin vier", "javin", "jawin", "yawin", "javin 4"],
-      "options": { "A": "Yavin", "B": "Bespin", "C": "Endor" },
+      "alternatives": [
+        "yavin 4",
+        "yavin vier",
+        "javin",
+        "jawin",
+        "yawin",
+        "javin 4"
+      ],
+      "options": {
+        "A": "Yavin",
+        "B": "Bespin",
+        "C": "Endor"
+      },
       "correct": "A"
     },
     {
       "question": "Welches Schneemonster verschleppt Luke auf Hoth in seine Eishöhle?",
       "answer": "Wampa",
-      "alternatives": ["wamper", "vampa", "wampah", "wumpa", "wompa", "wampe"],
-      "options": { "A": "Rancor", "B": "Tauntaun", "C": "Wampa" },
+      "alternatives": [
+        "wamper",
+        "vampa",
+        "wampah",
+        "wumpa",
+        "wompa",
+        "wampe"
+      ],
+      "options": {
+        "A": "Rancor",
+        "B": "Tauntaun",
+        "C": "Wampa"
+      },
       "correct": "C"
     },
     {
       "question": "Wer stürzt den Imperator am Ende von Die Rückkehr der Jedi-Ritter in den Reaktorschacht?",
       "answer": "Darth Vader",
-      "alternatives": ["vader", "anakin", "anakin skywalker", "dart vader", "darth vadar"],
-      "options": { "A": "Luke", "B": "Darth Vader", "C": "Lando" },
+      "alternatives": [
+        "vader",
+        "anakin",
+        "anakin skywalker",
+        "dart vader",
+        "darth vadar"
+      ],
+      "options": {
+        "A": "Luke",
+        "B": "Darth Vader",
+        "C": "Lando"
+      },
       "correct": "B"
     },
     {
       "question": "Was ist Luke am Ende von Die Rückkehr der Jedi-Ritter geworden?",
       "answer": "Jedi-Ritter",
-      "alternatives": ["jedi", "ein jedi", "jediritter", "jedi ritter", "jedimeister", "jedi meister"],
-      "options": { "A": "Jedi-Ritter", "B": "Sith-Lord", "C": "Kopfgeldjäger" },
+      "alternatives": [
+        "jedi",
+        "ein jedi",
+        "jediritter",
+        "jedi ritter",
+        "jedimeister",
+        "jedi meister"
+      ],
+      "options": {
+        "A": "Jedi-Ritter",
+        "B": "Sith-Lord",
+        "C": "Kopfgeldjäger"
+      },
       "correct": "A"
+    },
+    {
+      "question": "Welcher Jedi stirbt in Episode vier im Lichtschwertduell gegen Darth Vader?",
+      "answer": "Obi-Wan Kenobi",
+      "alternatives": [
+        "obi-wan",
+        "obi wan",
+        "ben kenobi",
+        "kenobi",
+        "ben"
+      ],
+      "options": {
+        "A": "Yoda",
+        "B": "Obi-Wan Kenobi",
+        "C": "Luke Skywalker"
+      },
+      "correct": "B"
+    },
+    {
+      "question": "Wie alt ist Yoda nach eigener Aussage in Episode sechs?",
+      "answer": "900 Jahre",
+      "alternatives": [
+        "900",
+        "neunhundert",
+        "neunhundert jahre"
+      ],
+      "options": {
+        "A": "500 Jahre",
+        "B": "1000 Jahre",
+        "C": "900 Jahre"
+      },
+      "correct": "C"
+    },
+    {
+      "question": "Wer erzählt Luke in Episode sechs, dass er eine Zwillingsschwester hat?",
+      "answer": "Obi-Wan Kenobi",
+      "alternatives": [
+        "obi-wan",
+        "obi wan",
+        "ben",
+        "kenobi",
+        "obi-wans geist"
+      ],
+      "options": {
+        "A": "Obi-Wan Kenobi",
+        "B": "Darth Vader",
+        "C": "Lando Calrissian"
+      },
+      "correct": "A"
+    },
+    {
+      "question": "Wessen Machtgeist erscheint am Ende von Episode sechs neben Obi-Wan und Yoda?",
+      "answer": "Anakin Skywalker",
+      "alternatives": [
+        "anakin",
+        "darth vader",
+        "vader",
+        "lukes vater"
+      ],
+      "options": {
+        "A": "Onkel Owen",
+        "B": "Anakin Skywalker",
+        "C": "Biggs"
+      },
+      "correct": "B"
+    },
+    {
+      "question": "Welcher Freund Lukes aus Tatooine stirbt beim Angriff auf den ersten Todesstern?",
+      "answer": "Biggs",
+      "alternatives": [
+        "biggs darklighter",
+        "bigs",
+        "biks"
+      ],
+      "options": {
+        "A": "Wedge",
+        "B": "Porkins",
+        "C": "Biggs"
+      },
+      "correct": "C"
+    },
+    {
+      "question": "Wer fliegt in der Schlacht um Endor den Millennium Falken?",
+      "answer": "Lando Calrissian",
+      "alternatives": [
+        "lando",
+        "calrissian"
+      ],
+      "options": {
+        "A": "Lando Calrissian",
+        "B": "Han Solo",
+        "C": "Chewbacca"
+      },
+      "correct": "A"
+    },
+    {
+      "question": "Wer leitet in Episode sechs die Einsatzbesprechung der Rebellen vor der Schlacht um Endor?",
+      "answer": "Mon Mothma",
+      "alternatives": [
+        "mothma",
+        "mon motma",
+        "monmothma"
+      ],
+      "options": {
+        "A": "Leia",
+        "B": "Mon Mothma",
+        "C": "Admiral Ackbar"
+      },
+      "correct": "B"
+    },
+    {
+      "question": "Welches Volk hat laut den Rebellen unter großen Verlusten die Pläne des zweiten Todessterns beschafft?",
+      "answer": "Bothaner",
+      "alternatives": [
+        "bothans",
+        "botaner",
+        "die bothaner"
+      ],
+      "options": {
+        "A": "Ewoks",
+        "B": "Jawas",
+        "C": "Bothaner"
+      },
+      "correct": "C"
+    },
+    {
+      "question": "Wie heißt der General, der den Angriff der Kampfläufer auf Hoth befehligt?",
+      "answer": "Veers",
+      "alternatives": [
+        "general veers",
+        "viers",
+        "wiers"
+      ],
+      "options": {
+        "A": "Veers",
+        "B": "Tarkin",
+        "C": "Madine"
+      },
+      "correct": "A"
+    },
+    {
+      "question": "Wie heißt der Kapitän, den Vader tötet, nachdem er den Millennium Falken im Asteroidenfeld verloren hat?",
+      "answer": "Needa",
+      "alternatives": [
+        "captain needa",
+        "kapitän needa",
+        "nida",
+        "nieda"
+      ],
+      "options": {
+        "A": "Piett",
+        "B": "Needa",
+        "C": "Ozzel"
+      },
+      "correct": "B"
+    },
+    {
+      "question": "Wem begegnet Luke in der Höhle auf Dagobah in einer Vision?",
+      "answer": "Darth Vader",
+      "alternatives": [
+        "vader",
+        "sich selbst"
+      ],
+      "options": {
+        "A": "Dem Imperator",
+        "B": "Obi-Wan",
+        "C": "Darth Vader"
+      },
+      "correct": "C"
+    },
+    {
+      "question": "Welche Aufgabe muss C-3PO in Jabbas Palast übernehmen?",
+      "answer": "Dolmetscher",
+      "alternatives": [
+        "übersetzer",
+        "übersetzen",
+        "dolmetschen"
+      ],
+      "options": {
+        "A": "Dolmetscher",
+        "B": "Koch",
+        "C": "Wächter"
+      },
+      "correct": "A"
+    },
+    {
+      "question": "Als was muss R2-D2 auf Jabbas Segelbarke arbeiten?",
+      "answer": "Kellner",
+      "alternatives": [
+        "getränkekellner",
+        "bedienung",
+        "barkeeper",
+        "getränke servieren"
+      ],
+      "options": {
+        "A": "Pilot",
+        "B": "Kellner",
+        "C": "Musiker"
+      },
+      "correct": "B"
+    },
+    {
+      "question": "Womit erwürgt Leia den Gangsterboss Jabba?",
+      "answer": "Kette",
+      "alternatives": [
+        "ketten",
+        "ihre kette",
+        "mit der kette"
+      ],
+      "options": {
+        "A": "Peitsche",
+        "B": "Seil",
+        "C": "Kette"
+      },
+      "correct": "C"
+    },
+    {
+      "question": "Welcher Schauspieler spielt Luke Skywalker?",
+      "answer": "Mark Hamill",
+      "alternatives": [
+        "hamill",
+        "mark hamil",
+        "mark hammill"
+      ],
+      "options": {
+        "A": "Harrison Ford",
+        "B": "Mark Hamill",
+        "C": "Alec Guinness"
+      },
+      "correct": "B"
+    },
+    {
+      "question": "Welcher Schauspieler spielt Han Solo?",
+      "answer": "Harrison Ford",
+      "alternatives": [
+        "ford",
+        "harrison"
+      ],
+      "options": {
+        "A": "Harrison Ford",
+        "B": "Mark Hamill",
+        "C": "Billy Dee Williams"
+      },
+      "correct": "A"
+    },
+    {
+      "question": "Welche Schauspielerin spielt Prinzessin Leia?",
+      "answer": "Carrie Fisher",
+      "alternatives": [
+        "fisher",
+        "carry fisher",
+        "kerry fisher"
+      ],
+      "options": {
+        "A": "Natalie Portman",
+        "B": "Daisy Ridley",
+        "C": "Carrie Fisher"
+      },
+      "correct": "C"
+    },
+    {
+      "question": "Wer leiht Darth Vader im englischen Original seine Stimme?",
+      "answer": "James Earl Jones",
+      "alternatives": [
+        "earl jones",
+        "james jones"
+      ],
+      "options": {
+        "A": "David Prowse",
+        "B": "James Earl Jones",
+        "C": "Peter Cushing"
+      },
+      "correct": "B"
+    },
+    {
+      "question": "Wer führte bei Episode fünf, Das Imperium schlägt zurück, Regie?",
+      "answer": "Irvin Kershner",
+      "alternatives": [
+        "kershner",
+        "irwin kershner",
+        "kirschner"
+      ],
+      "options": {
+        "A": "Irvin Kershner",
+        "B": "George Lucas",
+        "C": "Steven Spielberg"
+      },
+      "correct": "A"
+    },
+    {
+      "question": "Wer komponierte die Musik der Original-Trilogie?",
+      "answer": "John Williams",
+      "alternatives": [
+        "williams",
+        "john william"
+      ],
+      "options": {
+        "A": "Hans Zimmer",
+        "B": "Ennio Morricone",
+        "C": "John Williams"
+      },
+      "correct": "C"
+    },
+    {
+      "question": "In welchem Jahr kam Episode vier in den USA in die Kinos?",
+      "answer": "1977",
+      "alternatives": [
+        "neunzehnhundertsiebenundsiebzig",
+        "77"
+      ],
+      "options": {
+        "A": "1975",
+        "B": "1977",
+        "C": "1980"
+      },
+      "correct": "B"
+    },
+    {
+      "question": "Unter welchem Titel lief Episode vier 1978 in den deutschen Kinos?",
+      "answer": "Krieg der Sterne",
+      "alternatives": [
+        "eine neue hoffnung"
+      ],
+      "options": {
+        "A": "Krieg der Sterne",
+        "B": "Sternenkrieger",
+        "C": "Die Sternensaga"
+      },
+      "correct": "A"
+    },
+    {
+      "question": "Welche Art Raumschiff verfolgt zu Beginn von Episode vier Prinzessin Leias Schiff?",
+      "answer": "Sternzerstörer",
+      "alternatives": [
+        "sternenzerstörer",
+        "star destroyer",
+        "imperialer sternzerstörer"
+      ],
+      "options": {
+        "A": "Todesstern",
+        "B": "Sternzerstörer",
+        "C": "TIE-Jäger"
+      },
+      "correct": "B"
+    },
+    {
+      "question": "Wie heißen die imperialen Jäger mit den sechseckigen Flügeln?",
+      "answer": "TIE-Jäger",
+      "alternatives": [
+        "tie jäger",
+        "tie fighter",
+        "tie",
+        "tai jäger",
+        "tie-fighter"
+      ],
+      "options": {
+        "A": "X-Wing",
+        "B": "A-Wing",
+        "C": "TIE-Jäger"
+      },
+      "correct": "C"
+    },
+    {
+      "question": "Wie heißen die Soldaten in weißer Rüstung, die für das Imperium kämpfen?",
+      "answer": "Sturmtruppen",
+      "alternatives": [
+        "sturmtruppler",
+        "stormtrooper",
+        "sturmtruppe",
+        "sturmsoldaten"
+      ],
+      "options": {
+        "A": "Sturmtruppen",
+        "B": "Klonkrieger",
+        "C": "Ehrengarde"
+      },
+      "correct": "A"
+    },
+    {
+      "question": "In welcher Anlage auf dem Todesstern drohen Luke, Han, Leia und Chewbacca zerquetscht zu werden?",
+      "answer": "Müllpresse",
+      "alternatives": [
+        "müllschlucker",
+        "abfallpresse",
+        "müllverdichter",
+        "müll",
+        "presse"
+      ],
+      "options": {
+        "A": "Reaktorschacht",
+        "B": "Müllpresse",
+        "C": "Hangar"
+      },
+      "correct": "B"
+    },
+    {
+      "question": "Mit welchem Gerät verfolgt das Imperium den Millennium Falken nach der Flucht vom Todesstern bis zur Rebellenbasis?",
+      "answer": "Peilsender",
+      "alternatives": [
+        "sender",
+        "peilgerät",
+        "ortungsgerät",
+        "tracker",
+        "peilsignal"
+      ],
+      "options": {
+        "A": "Suchdroiden",
+        "B": "Spion",
+        "C": "Peilsender"
+      },
+      "correct": "C"
+    },
+    {
+      "question": "In welches Gebiet flieht der Millennium Falke in Episode fünf vor den Sternzerstörern?",
+      "answer": "Asteroidenfeld",
+      "alternatives": [
+        "asteroiden",
+        "asteroidengürtel"
+      ],
+      "options": {
+        "A": "Asteroidenfeld",
+        "B": "Nebel",
+        "C": "Hyperraum"
+      },
+      "correct": "A"
+    },
+    {
+      "question": "Welches riesige Wesen verschlingt im Asteroidenfeld beinahe den Millennium Falken?",
+      "answer": "Weltraumwurm",
+      "alternatives": [
+        "exogorth",
+        "riesenwurm",
+        "asteroidenwurm",
+        "wurm",
+        "weltraumschnecke",
+        "space slug"
+      ],
+      "options": {
+        "A": "Sarlacc",
+        "B": "Weltraumwurm",
+        "C": "Wampa"
+      },
+      "correct": "B"
+    },
+    {
+      "question": "Welches Bauteil des Millennium Falken funktioniert in Episode fünf lange nicht?",
+      "answer": "Hyperantrieb",
+      "alternatives": [
+        "hyper antrieb",
+        "hyperraumantrieb",
+        "antrieb"
+      ],
+      "options": {
+        "A": "Schutzschild",
+        "B": "Hyperantrieb",
+        "C": "Bordgeschütz"
+      },
+      "correct": "B"
+    },
+    {
+      "question": "Wer schaltet am Ende von Episode fünf den Hyperantrieb des Falken wieder ein?",
+      "answer": "R2-D2",
+      "alternatives": [
+        "r2d2",
+        "r2 d2",
+        "r 2 d 2",
+        "artoo",
+        "r2"
+      ],
+      "options": {
+        "A": "Chewbacca",
+        "B": "Lando",
+        "C": "R2-D2"
+      },
+      "correct": "C"
+    },
+    {
+      "question": "Mit welcher Art Droide entdeckt das Imperium die Rebellenbasis auf Hoth?",
+      "answer": "Suchdroide",
+      "alternatives": [
+        "sondendroide",
+        "viper sondendroide",
+        "viper-sondendroide",
+        "spähdroide",
+        "probe droid",
+        "viper"
+      ],
+      "options": {
+        "A": "Suchdroide",
+        "B": "Protokolldroide",
+        "C": "Astromechdroide"
+      },
+      "correct": "A"
+    },
+    {
+      "question": "Was hebt Yoda auf Dagobah mit der Macht aus dem Sumpf?",
+      "answer": "Lukes X-Wing",
+      "alternatives": [
+        "x-wing",
+        "x wing",
+        "xwing",
+        "raumschiff",
+        "lukes jäger"
+      ],
+      "options": {
+        "A": "Einen Felsen",
+        "B": "R2-D2",
+        "C": "Lukes X-Wing"
+      },
+      "correct": "C"
+    },
+    {
+      "question": "Mit welchem schwebenden Fahrzeug ist Luke auf Tatooine unterwegs?",
+      "answer": "Landgleiter",
+      "alternatives": [
+        "landspeeder",
+        "land gleiter",
+        "gleiter"
+      ],
+      "options": {
+        "A": "Speeder-Bike",
+        "B": "Landgleiter",
+        "C": "Tauntaun"
+      },
+      "correct": "B"
+    },
+    {
+      "question": "Wie viele Sonnen hat der Planet Tatooine?",
+      "answer": "Zwei",
+      "alternatives": [
+        "2",
+        "zwei sonnen"
+      ],
+      "options": {
+        "A": "Eine",
+        "B": "Zwei",
+        "C": "Drei"
+      },
+      "correct": "B"
+    },
+    {
+      "question": "Auf welchem Gefährt soll Luke über der Sarlacc-Grube hingerichtet werden?",
+      "answer": "Segelbarke",
+      "alternatives": [
+        "barke",
+        "jabbas barke",
+        "segelschiff",
+        "sail barge",
+        "segelgleiter"
+      ],
+      "options": {
+        "A": "Segelbarke",
+        "B": "Sternzerstörer",
+        "C": "Landgleiter"
+      },
+      "correct": "A"
+    },
+    {
+      "question": "In der Nähe welches Planeten formiert sich laut Darth Vader die Rebellenflotte vor der Schlacht um Endor?",
+      "answer": "Sullust",
+      "alternatives": [
+        "sulust",
+        "sullus",
+        "sulus"
+      ],
+      "options": {
+        "A": "Hoth",
+        "B": "Yavin",
+        "C": "Sullust"
+      },
+      "correct": "C"
+    },
+    {
+      "question": "Was schützt den zweiten Todesstern während des Baus vor Angriffen?",
+      "answer": "Schutzschild",
+      "alternatives": [
+        "schild",
+        "energieschild",
+        "deflektorschild",
+        "schildgenerator"
+      ],
+      "options": {
+        "A": "Schutzschild",
+        "B": "Asteroidenfeld",
+        "C": "Tarnvorrichtung"
+      },
+      "correct": "A"
+    },
+    {
+      "question": "Was zerstören Lando und Wedge im Inneren des zweiten Todessterns?",
+      "answer": "Hauptreaktor",
+      "alternatives": [
+        "reaktor",
+        "den reaktor",
+        "energiekern",
+        "reaktorkern"
+      ],
+      "options": {
+        "A": "Kommandobrücke",
+        "B": "Schildgenerator",
+        "C": "Hauptreaktor"
+      },
+      "correct": "C"
+    },
+    {
+      "question": "Wie heißen die zweibeinigen imperialen Läufer, die auf Endor kämpfen?",
+      "answer": "AT-ST",
+      "alternatives": [
+        "atst",
+        "at st",
+        "a t s t",
+        "scout walker"
+      ],
+      "options": {
+        "A": "AT-AT",
+        "B": "AT-ST",
+        "C": "Speeder-Bike"
+      },
+      "correct": "B",
+      "strict": true
+    },
+    {
+      "question": "Womit zerquetschen die Ewoks auf Endor einen AT-ST?",
+      "answer": "Baumstämme",
+      "alternatives": [
+        "stämme",
+        "baumstamm",
+        "holzstämme",
+        "stamm"
+      ],
+      "options": {
+        "A": "Baumstämme",
+        "B": "Felsen",
+        "C": "Netze"
+      },
+      "correct": "A"
+    },
+    {
+      "question": "Mit welcher Machtattacke foltert der Imperator Luke in Episode sechs?",
+      "answer": "Machtblitze",
+      "alternatives": [
+        "blitze",
+        "blitz",
+        "machtblitz",
+        "elektrische blitze"
+      ],
+      "options": {
+        "A": "Machtwürgen",
+        "B": "Machtblitze",
+        "C": "Feuer"
+      },
+      "correct": "B"
+    },
+    {
+      "question": "Welches Körperteil schlägt Luke seinem Vater im Duell in Episode sechs ab?",
+      "answer": "Die rechte Hand",
+      "alternatives": [
+        "hand",
+        "rechte hand",
+        "die hand",
+        "seine hand"
+      ],
+      "options": {
+        "A": "Den linken Fuß",
+        "B": "Den Kopf",
+        "C": "Die rechte Hand"
+      },
+      "correct": "C"
+    },
+    {
+      "question": "Was nimmt Luke seinem sterbenden Vater auf dessen Wunsch ab?",
+      "answer": "Die Maske",
+      "alternatives": [
+        "maske",
+        "helm",
+        "seinen helm",
+        "atemmaske"
+      ],
+      "options": {
+        "A": "Die Maske",
+        "B": "Den Umhang",
+        "C": "Das Lichtschwert"
+      },
+      "correct": "A"
+    },
+    {
+      "question": "Wie verabschiedet Luke seinen toten Vater auf Endor?",
+      "answer": "Scheiterhaufen",
+      "alternatives": [
+        "verbrennt ihn",
+        "verbrannt",
+        "feuer",
+        "verbrennung"
+      ],
+      "options": {
+        "A": "Seebestattung",
+        "B": "Scheiterhaufen",
+        "C": "Grab im Wald"
+      },
+      "correct": "B"
+    },
+    {
+      "question": "Wem dient Darth Vader und berichtet ihm in Episode fünf per Hologramm?",
+      "answer": "Dem Imperator",
+      "alternatives": [
+        "imperator",
+        "kaiser",
+        "palpatine",
+        "imperator palpatine"
+      ],
+      "options": {
+        "A": "Großmoff Tarkin",
+        "B": "Jabba",
+        "C": "Dem Imperator"
+      },
+      "correct": "C"
+    },
+    {
+      "question": "Was antwortet Han Solo, als Leia ihm vor dem Einfrieren sagt: Ich liebe dich?",
+      "answer": "Ich weiß",
+      "alternatives": [
+        "weiß",
+        "ich weiss",
+        "das weiß ich"
+      ],
+      "options": {
+        "A": "Ich dich auch",
+        "B": "Ich weiß",
+        "C": "Bis bald"
+      },
+      "correct": "B"
+    },
+    {
+      "question": "Welche Farbe hat die Milch, die Luke auf Tatooine trinkt?",
+      "answer": "Blau",
+      "alternatives": [
+        "blaue",
+        "blaue milch",
+        "blue"
+      ],
+      "options": {
+        "A": "Blau",
+        "B": "Grün",
+        "C": "Weiß"
+      },
+      "correct": "A"
+    },
+    {
+      "question": "Welche Farbe hat das Lichtschwert von Lukes Vater, das Luke in Episode vier bekommt?",
+      "answer": "Blau",
+      "alternatives": [
+        "blaues",
+        "blaue",
+        "blue"
+      ],
+      "options": {
+        "A": "Grün",
+        "B": "Blau",
+        "C": "Rot"
+      },
+      "correct": "B"
+    },
+    {
+      "question": "Wie nennen die Jedi die Energie, die alle Lebewesen umgibt und verbindet?",
+      "answer": "Die Macht",
+      "alternatives": [
+        "macht",
+        "the force",
+        "force"
+      ],
+      "options": {
+        "A": "Das Licht",
+        "B": "Der Geist",
+        "C": "Die Macht"
+      },
+      "correct": "C"
     }
   ],
   "tiebreakers": [
     {
       "question": "Stichfrage: In welcher Zelle im Gefängnisblock AA-23 wird Leia auf dem Todesstern festgehalten? Nenne die Nummer.",
       "answer": "2187",
-      "alternatives": ["21 87", "zelle 2187", "einundzwanzig siebenundachtzig", "zweitausendeinhundertsiebenundachtzig"],
-      "options": { "A": "1138", "B": "2187", "C": "3263" },
+      "alternatives": [
+        "21 87",
+        "zelle 2187",
+        "einundzwanzig siebenundachtzig",
+        "zweitausendeinhundertsiebenundachtzig"
+      ],
+      "options": {
+        "A": "1138",
+        "B": "2187",
+        "C": "3263"
+      },
       "correct": "B"
     },
     {
       "question": "Stichfrage: In weniger als wie vielen Parsec hat Han Solo nach eigener Aussage den Kessel-Flug geschafft?",
       "answer": "12",
-      "alternatives": ["zwölf", "zwoelf", "12 parsec", "weniger als 12", "unter 12", "zwölf parsec"],
-      "options": { "A": "7", "B": "20", "C": "12" },
+      "alternatives": [
+        "zwölf",
+        "zwoelf",
+        "12 parsec",
+        "weniger als 12",
+        "unter 12",
+        "zwölf parsec"
+      ],
+      "options": {
+        "A": "7",
+        "B": "20",
+        "C": "12"
+      },
       "correct": "C"
     },
     {
       "question": "Stichfrage: Welchen Planeten nennt Leia als angeblichen Standort der Rebellenbasis, um Alderaan zu retten?",
       "answer": "Dantooine",
-      "alternatives": ["dantuin", "dantoine", "dantooin", "dantuine", "dantuhin", "dantowin"],
-      "options": { "A": "Kessel", "B": "Dantooine", "C": "Corellia" },
+      "alternatives": [
+        "dantuin",
+        "dantoine",
+        "dantooin",
+        "dantuine",
+        "dantuhin",
+        "dantowin"
+      ],
+      "options": {
+        "A": "Kessel",
+        "B": "Dantooine",
+        "C": "Corellia"
+      },
       "correct": "B"
     },
     {
       "question": "Stichfrage: Wie heißt der Rebellenpilot, der bei beiden Angriffen auf die Todessterne dabei ist und überlebt?",
       "answer": "Wedge Antilles",
-      "alternatives": ["wedge", "wetsch", "wedsch", "wedsh", "wetch", "wedge antilis", "wetsch antilles"],
-      "options": { "A": "Biggs", "B": "Porkins", "C": "Wedge Antilles" },
+      "alternatives": [
+        "wedge",
+        "wetsch",
+        "wedsch",
+        "wedsh",
+        "wetch",
+        "wedge antilis",
+        "wetsch antilles"
+      ],
+      "options": {
+        "A": "Biggs",
+        "B": "Porkins",
+        "C": "Wedge Antilles"
+      },
       "correct": "C"
     },
     {
       "question": "Stichfrage: Wie heißt Lukes Tante auf Tatooine?",
       "answer": "Beru",
-      "alternatives": ["tante beru", "baru", "beeru", "beruh", "beru lars"],
-      "options": { "A": "Mara", "B": "Beru", "C": "Mon" },
+      "alternatives": [
+        "tante beru",
+        "baru",
+        "beeru",
+        "beruh",
+        "beru lars"
+      ],
+      "options": {
+        "A": "Mara",
+        "B": "Beru",
+        "C": "Mon"
+      },
       "correct": "B"
     },
     {
       "question": "Stichfrage: Welcher Rebell führt als General den Bodentrupp auf Endor an, der den Schildgenerator sprengen soll?",
       "answer": "Han Solo",
-      "alternatives": ["han", "solo", "general solo", "hans solo", "hahn solo", "hansolo"],
-      "options": { "A": "Lando Calrissian", "B": "Han Solo", "C": "General Madine" },
+      "alternatives": [
+        "han",
+        "solo",
+        "general solo",
+        "hans solo",
+        "hahn solo",
+        "hansolo"
+      ],
+      "options": {
+        "A": "Lando Calrissian",
+        "B": "Han Solo",
+        "C": "General Madine"
+      },
       "correct": "B"
     },
     {
       "question": "Stichfrage: Welcher Offizier wird in Episode fünf zum Admiral befördert, nachdem Vader seinen Vorgänger getötet hat?",
       "answer": "Piett",
-      "alternatives": ["admiral piett", "piet", "pieht", "pjet", "biet"],
-      "options": { "A": "Piett", "B": "Needa", "C": "Veers" },
+      "alternatives": [
+        "admiral piett",
+        "piet",
+        "pieht",
+        "pjet",
+        "biet"
+      ],
+      "options": {
+        "A": "Piett",
+        "B": "Needa",
+        "C": "Veers"
+      },
       "correct": "A"
     }
   ]

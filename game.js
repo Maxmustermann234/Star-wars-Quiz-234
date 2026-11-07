@@ -115,25 +115,33 @@ const Text = (() => {
   }
 
   /** Passt eine gesprochene Antwort zu einer Zielantwort? */
-  function similar(spoken, target) {
+  const digits = (str) => str.replace(/\D/g, '');
+
+  /**
+   * Passt eine gesprochene/getippte Antwort zu einer Zielantwort?
+   * Zahlen müssen immer exakt stimmen ("500 Jahre" ≠ "900 Jahre").
+   * strict: keine Tippfehler-Toleranz (für sehr ähnliche Antworten wie AT-AT / AT-ST).
+   */
+  function similar(spoken, target, strict = false) {
     const s = tokens(spoken);
     const t = tokens(target);
     if (!s.length || !t.length) return false;
     const tc = t.join('');
-    const tol = tolerance(tc);
-    if (levenshtein(s.join(''), tc) <= tol) return true;
+    const tol = strict ? 0 : tolerance(tc);
+    const close = (candidate) => digits(candidate) === digits(tc) && levenshtein(candidate, tc) <= tol;
+    if (close(s.join(''))) return true;
     // Zielantwort irgendwo im Satz? ("ich glaube es war Yoda, oder?")
     for (let w = Math.max(1, t.length - 1); w <= t.length + 1; w++) {
       for (let i = 0; i + w <= s.length; i++) {
-        if (levenshtein(s.slice(i, i + w).join(''), tc) <= tol) return true;
+        if (close(s.slice(i, i + w).join(''))) return true;
       }
     }
     return false;
   }
 
   /** Irgendeine Erkennungsalternative passt zu irgendeiner Zielantwort */
-  function matchesAny(alts, targets) {
-    return alts.some((a) => targets.some((t) => similar(a, t)));
+  function matchesAny(alts, targets, strict = false) {
+    return alts.some((a) => targets.some((t) => similar(a, t, strict)));
   }
 
   return { basic, tokens, similar, matchesAny };
@@ -171,6 +179,17 @@ const Intent = {
       B: ['b', 'be', 'bee', 'beh', 'bh', '2', 'zweite', 'zweiten', 'zweitens'],
       C: ['c', 'ce', 'cee', 'ceh', 'zeh', 'ze', 'tse', 'tze', 'see', 'zee', 'cool', '3', 'dritte', 'dritten', 'drittens'],
     };
+    const byOptionText = (strict) => {
+      for (const alt of alts) {
+        const hits = LETTERS.filter((L) => Text.similar(alt, options[L], strict));
+        if (hits.length === 1) return hits[0];
+      }
+      return null;
+    };
+    // 1) Optionstext exakt genannt ("C-3PO" ist Option B, nicht Buchstabe C)
+    const exact = byOptionText(true);
+    if (exact) return exact;
+    // 2) Buchstabe genannt ("B", "Antwort be", "die zweite")
     for (const alt of alts) {
       const words = Text.basic(alt).split(' ').filter(Boolean)
         .map((w) => ({ eins: '1', zwei: '2', drei: '3' }[w] ?? w));
@@ -178,12 +197,8 @@ const Intent = {
       for (const L of LETTERS) if (words.some((w) => WORDS[L].includes(w))) found.add(L);
       if (found.size === 1) return [...found][0];
     }
-    // Optionstext genannt? ("Hoth")
-    for (const alt of alts) {
-      const hits = LETTERS.filter((L) => Text.similar(alt, options[L]));
-      if (hits.length === 1) return hits[0];
-    }
-    return null;
+    // 3) Optionstext mit kleinen Tipp-/Erkennungsfehlern ("Hot" → "Hoth")
+    return byOptionText(false);
   },
 };
 
@@ -768,7 +783,7 @@ async function askQuestion(player, q, { label, bucket }) {
   });
 
   // "wiederholen" → Frage nochmal (zählt nicht als Antwort)
-  while (alts && Intent.repeat(alts) && !Text.matchesAny(alts, accepted)) {
+  while (alts && Intent.repeat(alts) && !Text.matchesAny(alts, accepted, !!q.strict)) {
     alts = await ask(`Gerne. ${q.question}`, { retryPrompt: repeatPrompt, maxTries: CONFIG.maxListenTries });
   }
 
@@ -777,7 +792,7 @@ async function askQuestion(player, q, { label, bucket }) {
     return choiceRound(player, q, bucket);
   }
 
-  if (Text.matchesAny(alts, accepted)) {
+  if (Text.matchesAny(alts, accepted, !!q.strict)) {
     award(player, bucket, CONFIG.pointsFree);
     state.feedback = { text: `Richtig! ${q.answer} · +${CONFIG.pointsFree} Punkte`, type: 'ok' };
     render();
