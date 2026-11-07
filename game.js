@@ -297,45 +297,12 @@ const Speech = {
     UI.setMic('idle');
   },
 
+  cancelSpeech() { if (this.synthesisSupported) speechSynthesis.cancel(); },
+
   async _waitIdle() {
     if (!this.synthesisSupported) return;
     const t0 = Date.now();
     while (speechSynthesis.speaking && Date.now() - t0 < 15000) await sleep(100);
-  },
-
-  /**
-   * Hört einmal zu.
-   * @returns {Promise<{alts: string[]|null, error?: string}>}
-   */
-  async listen() {
-    if (TEST_MODE) return this._listenText();
-    await this._waitIdle();
-    if (this.textMode) return this._listenText();
-    if (IS_IOS) {
-      // iPad/iPhone: Audio-Sitzung freigeben, kein Signalton (blockiert sonst das Mikrofon)
-      try { speechSynthesis.cancel(); } catch { /* egal */ }
-      try { await Sound.ctx?.suspend?.(); } catch { /* egal */ }
-      await sleep(350);
-    } else {
-      await sleep(200);
-      Sound.listen();
-      await sleep(260); // Signalton nicht mit aufnehmen
-    }
-
-    if (!this.tapMode) return this._recognize();
-
-    // Tippen & Sprechen: Erkennung startet direkt im Tipp-Ereignis (nötig in Safari auf iOS)
-    UI.setMic('tap');
-    UI.heard('', false);
-    return new Promise((resolve) => {
-      const mic = $('#mic');
-      const go = (e) => {
-        e.preventDefault();
-        mic.removeEventListener('click', go);
-        resolve(this._recognize());
-      };
-      mic.addEventListener('click', go);
-    });
   },
 
   /** Startet die Erkennung sofort (synchron) und liefert {alts, error, quick}. */
@@ -343,6 +310,7 @@ const Speech = {
     return new Promise((resolve) => {
       const Rec = window.SpeechRecognition || window.webkitSpeechRecognition;
       const rec = new Rec();
+      this._rec = rec;
       rec.lang = CONFIG.lang;
       rec.continuous = false;
       rec.interimResults = true;
@@ -361,11 +329,13 @@ const Speech = {
         if (settled) return;
         settled = true;
         clearTimeout(timer);
+        if (this._rec === rec) this._rec = null;
         UI.setMic('idle');
+        if (rec._aborted) { resolve({ alts: null, error: 'aborted' }); return; }
         let alts = finalAlts;
         if (!alts?.length && interim.trim()) alts = [interim.trim()];
         if (alts?.length) UI.heard(alts[0], false);
-        else UI.heard(error ? `Nichts verstanden (${error})` : 'Nichts verstanden', false);
+        else UI.heard('', false);
         diag(`Ende (${((Date.now() - t0) / 1000).toFixed(1)} s)`);
         resolve(alts?.length
           ? { alts }
@@ -419,24 +389,103 @@ const Speech = {
     });
   },
 
-  /** Testmodus: Antwort per Texteingabe */
-  _listenText() {
-    UI.setMic('listening');
-    UI.heard('', false);
-    const form = $('#test-input');
-    const input = $('#test-text');
-    input.value = '';
-    input.focus();
+  /** laufende Erkennung abbrechen (z. B. weil getippt wurde) */
+  abortRecognition() {
+    const rec = this._rec;
+    if (!rec) return;
+    rec._aborted = true;
+    try { rec.abort(); } catch { /* egal */ }
+  },
+  /** laufende Erkennung beenden und Ergebnis übernehmen */
+  stopRecognition() { try { this._rec?.stop(); } catch { /* egal */ } },
+  get listening() { return !!this._rec; },
+};
+
+/* ==========================================================
+   Eingabe: Tastatur, Tasten (Weiß nicht / A / B / C) oder Mikrofon
+   ========================================================== */
+const Input = {
+  handsFree: false,   // automatisch nach jeder Frage zuhören
+  micBlocked: false,  // Spracherkennung auf diesem Gerät nicht erlaubt
+  _wait: null,
+
+  get micAvailable() {
+    return !TEST_MODE && Speech.recognitionSupported && !this.micBlocked;
+  },
+
+  /** Wartet auf die nächste Antwort. @returns {Promise<{alts: string[]|null, error?: string}>} */
+  wait({ choice = false } = {}) {
     return new Promise((resolve) => {
-      form.onsubmit = (e) => {
-        e.preventDefault();
-        form.onsubmit = null;
-        const v = input.value.trim();
-        UI.setMic('idle');
-        if (v) UI.heard(v, false);
-        resolve(v ? { alts: [v] } : { alts: null, error: 'no-speech' });
+      const w = { choice, done: false };
+      w.finish = (res) => {
+        if (w.done) return;
+        w.done = true;
+        this._wait = null;
+        Speech.abortRecognition();
+        UI.answerBar(false);
+        resolve(res);
       };
+      this._wait = w;
+      UI.note('');
+      UI.answerBar(true, { choice });
+      if (this.handsFree && this.micAvailable) this._autoListen(w);
     });
+  },
+
+  /** Antwort per Tastatur oder Taste */
+  text(value) {
+    const v = String(value || '').trim();
+    if (!this._wait || !v) return false;
+    UI.heard(v, false);
+    this._wait.finish({ alts: [v] });
+    return true;
+  },
+
+  /** Mikrofon angetippt: startet die Erkennung direkt im Tipp-Ereignis (nötig für Safari) */
+  micTap() {
+    const w = this._wait;
+    if (!w || !this.micAvailable) return;
+    if (Speech.listening) { Speech.stopRecognition(); return; }
+    Speech.cancelSpeech();
+    this._listen(w, false);
+  },
+
+  async _autoListen(w) {
+    await Speech._waitIdle();
+    await sleep(200);
+    Sound.listen();
+    await sleep(260); // Signalton nicht mit aufnehmen
+    if (w.done || Speech.listening) return;
+    this._listen(w, true);
+  },
+
+  async _listen(w, auto) {
+    UI.note('');
+    const res = await Speech._recognize();
+    if (w.done) return;
+    if (res.alts?.length) { w.finish(res); return; }
+
+    const e = res.error;
+    if (auto && e === 'not-allowed') {
+      // automatisches Zuhören braucht in manchen Browsern ein Antippen
+      this.handsFree = false;
+      UI.note('Automatisches Zuhören klappt hier nicht – tippe aufs Mikrofon oder gib die Antwort ein.');
+      return;
+    }
+    if (['not-allowed', 'service-not-allowed', 'audio-capture'].includes(e)) {
+      this.micBlocked = true;
+      this.handsFree = false;
+      UI.updateMicButton();
+      UI.note('Spracheingabe ist auf diesem Gerät nicht freigegeben – bitte tippe deine Antwort ein.');
+      return;
+    }
+    if (e === 'network') {
+      this.handsFree = false;
+      UI.note('Die Spracherkennung ist gerade nicht erreichbar – bitte tippe deine Antwort ein.');
+      return;
+    }
+    if (auto) { w.finish({ alts: null, error: e }); return; } // Frage wird freundlich wiederholt
+    UI.note('Nichts verstanden – tippe noch einmal aufs Mikrofon oder gib die Antwort ein.');
   },
 };
 
@@ -450,53 +499,15 @@ const PRAISE = ['Richtig!', 'Ausgezeichnet!', 'Stark!', 'Volltreffer!', 'Genau!'
 const COMFORT = ['Leider falsch.', 'Das war leider nicht richtig.', 'Knapp daneben ist auch vorbei.'];
 
 /**
- * Spricht einen Text und hört danach zu. Wiederholt freundlich, wenn nichts verstanden wurde.
- * @returns {Promise<string[]|null>} Erkennungsalternativen oder null nach maxTries Fehlversuchen
+ * Liest einen Text vor und wartet auf eine Antwort (Tastatur, Taste oder Mikrofon).
+ * Nur beim freihändigen Zuhören kann "nichts verstanden" vorkommen; dann wird freundlich wiederholt.
+ * @returns {Promise<string[]|null>} Antwort(en) oder null nach maxTries Fehlversuchen
  */
-async function ask(prompt, { retryPrompt = prompt, maxTries = Infinity } = {}) {
+async function ask(prompt, { retryPrompt = prompt, maxTries = Infinity, choice = false } = {}) {
   await Speech.speak(prompt);
-  let networkErrors = 0;
   for (let tries = 1; ; tries++) {
-    const { alts, error } = await Speech.listen();
-
-    if (alts?.length) { Speech.fails = 0; return alts; }
-
-    // iPad: Spracherkennung vom System gesperrt → Antworten eintippen oder per Tastatur diktieren
-    if (IS_IOS && !Speech.textMode
-      && (error === 'service-not-allowed' || (Speech.tapMode && error === 'not-allowed'))) {
-      Speech.textMode = true;
-      tries--;
-      UI.enableTextInput();
-      await Speech.speak(`Die Spracherkennung ist auf diesem iPad gesperrt. Bitte tippe deine Antwort unten ein, oder nutze die Mikrofon-Taste der Tastatur. ${retryPrompt}`);
-      continue;
-    }
-
-    // iPad/iPhone: klappt das automatische Zuhören nicht, auf "Tippen & Sprechen" umschalten
-    if (IS_IOS && !Speech.tapMode && !Speech.textMode && !TEST_MODE) {
-      Speech.fails = (Speech.fails || 0) + 1;
-      if (Speech.fails >= 1) {
-        Speech.tapMode = true;
-        tries--; // zählt nicht als Fehlversuch
-        await Speech.speak(`Auf diesem Gerät musst du kurz auf das Mikrofon tippen, bevor du sprichst. ${retryPrompt}`);
-        continue;
-      }
-    }
-
-    if (['not-allowed', 'service-not-allowed'].includes(error)) {
-      throw new FatalError('Der Zugriff auf Mikrofon oder Spracherkennung wurde verweigert. Chrome: Schloss-Symbol in der Adressleiste. iPad: Siri und die Diktierfunktion einschalten sowie unter Datenschutz & Sicherheit → Spracherkennung den Zugriff erlauben. Danach neu starten.');
-    }
-    if (error === 'audio-capture') {
-      throw new FatalError('Es wurde kein Mikrofon gefunden. Bitte schließe ein Mikrofon an und starte neu.');
-    }
-    if (error === 'network') {
-      networkErrors++;
-      if (networkErrors >= 3) {
-        throw new FatalError('Die Spracherkennung ist nicht erreichbar. Sie benötigt eine Internetverbindung.');
-      }
-      await Speech.speak('Die Spracherkennung ist gerade nicht erreichbar. Ich versuche es noch einmal.');
-      continue;
-    }
-
+    const { alts } = await Input.wait({ choice });
+    if (alts?.length) return alts;
     if (tries >= maxTries) return null;
     await Speech.speak(`${pick(SORRY)} ${retryPrompt}`);
   }
@@ -548,18 +559,26 @@ const UI = {
       s.classList.toggle('active', s.id === `screen-${name}`));
   },
   setMic(mode) {
-    const labels = { idle: 'Bereit', speaking: 'Spricht …', listening: 'Hört zu …', tap: 'Tippen & sprechen' };
+    const labels = { idle: 'Bereit', speaking: 'Spricht …', listening: 'Hört zu …' };
     $('#mic').dataset.state = mode;
+    $('#btn-mic').classList.toggle('listening', mode === 'listening');
     $('#mic-label').textContent = labels[mode] || '';
   },
   caption(text) { $('#caption').textContent = text; },
-  enableTextInput() {
-    const form = $('#test-input');
-    form.hidden = false;
-    form.classList.add('big');
-    form.querySelector('label').textContent = 'Antwort eintippen – oder auf der Tastatur die Mikrofon-Taste zum Diktieren nutzen:';
-    form.querySelector('input').placeholder = 'Antwort …';
+  /** Antwortleiste aktivieren/deaktivieren */
+  answerBar(active, { choice = false } = {}) {
+    const form = $('#answer-form');
+    form.classList.toggle('waiting', !active);
+    form.querySelectorAll('button').forEach((b) => { b.disabled = !active; });
+    $('#btn-dontknow').hidden = choice;
+    const input = $('#answer-text');
+    input.placeholder = choice ? 'A, B oder C …' : 'Deine Antwort …';
+    $('#options').classList.toggle('pickable', active && choice);
+    this.updateMicButton();
+    if (active && !IS_IOS) input.focus({ preventScroll: true });
   },
+  updateMicButton() { $('#btn-mic').hidden = !Input.micAvailable; },
+  note(text) { $('#answer-note').textContent = text; },
   diag(text) { const el = $('#diag'); if (el) el.textContent = text; },
   heard(text, interim) {
     const el = $('#heard');
@@ -687,78 +706,45 @@ function award(player, bucket, points) {
 /* ==========================================================
    Spielablauf
    ========================================================== */
-function extractName(raw) {
-  let t = String(raw || '').trim()
-    .replace(/^(also|äh|ähm|hallo|hi)[ ,]+/i, '')
-    .replace(/^(ich bin der|ich bin die|ich hei(ß|ss)e|ich bin|mein name ist|man nennt mich|hier ist|das ist)\s+/i, '')
-    .replace(/[.,!?;:"„“]/g, '')
-    .trim();
-  t = t.split(/\s+/).slice(0, 3).join(' ').slice(0, 24);
-  return t.replace(/(^|[\s-])(\p{L})/gu, (m, sep, ch) => sep + ch.toUpperCase());
+/** Namen aus dem Startformular: getrimmt, ohne Leerfelder, doppelte Namen nummeriert */
+let playerCount = 0; // auf dem Startbildschirm gewählte Anzahl (1–4)
+
+/** sichtbare Namensfelder für die gewählte Spielerzahl */
+function activeNameInputs() {
+  return [...document.querySelectorAll('.name-input')].slice(0, playerCount);
 }
 
-async function registerPlayers() {
-  state.phase = 'Anmeldung';
-  state.current = null;
+/** Spielerzahl wählen: passende Anzahl Namensfelder einblenden */
+function setPlayerCount(n) {
+  playerCount = n;
+  document.querySelectorAll('.count-btn').forEach((b) => {
+    const on = Number(b.dataset.count) === n;
+    b.classList.toggle('selected', on);
+    b.setAttribute('aria-checked', String(on));
+  });
+  const inputs = [...document.querySelectorAll('.name-input')];
+  inputs.forEach((input, i) => {
+    input.hidden = i >= n;
+    input.enterKeyHint = i === n - 1 ? 'go' : 'next';
+  });
+  $('#names-block').hidden = false;
+  document.querySelector('.name-grid').classList.toggle('single', n === 1);
+  const status = $('#start-status');
+  status.classList.remove('error');
+  const firstEmpty = inputs.slice(0, n).find((i) => !i.value.trim()) || inputs[0];
+  if (!IS_IOS) firstEmpty.focus();
+}
 
-  while (state.players.length < CONFIG.maxPlayers) {
-    const n = state.players.length + 1;
-    state.questionText = n === 1
-      ? 'Spieler 1, wie heißt du?'
-      : `Spieler ${n}, wie heißt du? – oder sage „fertig“.`;
-    state.feedback = { text: 'Sag deinen Namen nach dem Signalton.', type: 'info' };
-    state.progress = `${state.players.length} von ${CONFIG.maxPlayers} angemeldet`;
-    render();
-
-    const prompt = n === 1
-      ? 'Spieler eins, wie heißt du? Sag deinen Namen nach dem Signalton.'
-      : `Spieler ${n}, wie heißt du? Wenn alle angemeldet sind, sage: fertig.`;
-    const alts = await ask(prompt, {
-      retryPrompt: n === 1 ? 'Spieler eins, wie heißt du?' : `Spieler ${n}, wie heißt du? Oder sage: fertig.`,
-    });
-
-    if (Intent.done(alts)) {
-      if (n === 1) {
-        await Speech.speak('Mindestens ein Spieler muss mitspielen. Versuchen wir es noch einmal.');
-        continue;
-      }
-      break;
-    }
-
-    let name = extractName(alts[0]);
-    if (!name) {
-      await Speech.speak('Den Namen habe ich leider nicht verstanden.');
-      continue;
-    }
-    if (state.players.some((p) => p.name.toLowerCase() === name.toLowerCase())) {
-      name = `${name} ${n}`;
-    }
-
-    state.questionText = `Heißt du ${name}?`;
-    state.feedback = { text: 'Sag „ja“ oder „nein“.', type: 'info' };
-    render();
-    const confirm = await ask(`Ich habe ${name} verstanden. Stimmt das?`, {
-      retryPrompt: `Ist ${name} richtig? Sage ja oder nein.`,
-      maxTries: 2,
-    });
-    if (confirm && Intent.no(confirm)) {
-      await Speech.speak('Kein Problem, dann noch einmal.');
-      continue;
-    }
-
-    state.players.push({ name, score: 0, tie: 0, bump: false });
-    state.feedback = { text: `${name} ist an Bord!`, type: 'ok' };
-    render();
-    await Speech.speak(`Willkommen an Bord, ${name}!`);
-  }
-
-  const names = state.players.map((p) => p.name);
-  if (state.players.length === CONFIG.maxPlayers) {
-    await Speech.speak('Das Schiff ist voll besetzt.');
-  }
-  await Speech.speak(names.length === 1
-    ? `Es spielt ${names[0]}. Viel Erfolg!`
-    : `Es spielen ${joinNames(names)}. Möge der Bessere gewinnen!`);
+/** Namen der gewählten Spieler: leere Felder heißen "Spieler n", doppelte Namen werden nummeriert */
+function readNames() {
+  const names = [];
+  activeNameInputs().forEach((input, idx) => {
+    let name = input.value.trim().replace(/\s+/g, ' ').slice(0, 24) || `Spieler ${idx + 1}`;
+    const base = name;
+    for (let i = 2; names.some((n) => n.toLowerCase() === name.toLowerCase()); i++) name = `${base} ${i}`;
+    names.push(name);
+  });
+  return names;
 }
 
 /**
@@ -804,7 +790,7 @@ async function askQuestion(player, q, { label, bucket }) {
     return choiceRound(player, q, bucket);
   }
 
-  state.feedback = { text: `Falsch. Richtig wäre: ${q.answer}`, type: 'bad' };
+  state.feedback = { text: `„${alts[0]}“ ist falsch. Richtig wäre: ${q.answer}`, type: 'bad' };
   render();
   Sound.wrong();
   await Speech.speak(`${pick(COMFORT)} Die richtige Antwort ist: ${q.answer}. Keine Punkte.`);
@@ -813,20 +799,21 @@ async function askQuestion(player, q, { label, bucket }) {
 async function choiceRound(player, q, bucket) {
   state.options = q.options;
   state.reveal = null;
-  state.feedback = { text: 'Sag A, B oder C – richtig gibt 2 Punkte.', type: 'info' };
+  state.feedback = { text: 'Wähle A, B oder C – richtig gibt 2 Punkte.', type: 'info' };
   render();
 
   const optText = LETTERS.map((L) => `${L}: ${q.options[L]}.`).join(' ');
-  let alts = await ask(`Hier sind drei Möglichkeiten. ${optText} Was sagst du, A, B oder C?`, {
-    retryPrompt: `Bitte sage A, B oder C. ${optText}`,
+  let alts = await ask(`Hier sind drei Möglichkeiten. ${optText} Welche nimmst du: A, B oder C?`, {
+    retryPrompt: `Bitte wähle A, B oder C. ${optText}`,
+    choice: true,
   });
 
   let letter = Intent.letter(alts, q.options);
   while (!letter) {
     const prompt = Intent.repeat(alts)
       ? `Gerne noch einmal. ${optText} A, B oder C?`
-      : 'Das habe ich nicht als A, B oder C verstanden. Bitte sage nur den Buchstaben: A, B oder C.';
-    alts = await ask(prompt, { retryPrompt: `Bitte sage A, B oder C. ${optText}` });
+      : 'Das habe ich nicht als A, B oder C erkannt. Bitte wähle A, B oder C.';
+    alts = await ask(prompt, { retryPrompt: `Bitte wähle A, B oder C. ${optText}`, choice: true });
     letter = Intent.letter(alts, q.options);
   }
 
@@ -850,7 +837,12 @@ async function choiceRound(player, q, bucket) {
 async function questionRounds() {
   state.phase = 'Fragerunde';
   const total = CONFIG.questionsPerPlayer;
-  await Speech.speak(`Die Fragerunde beginnt! Jeder bekommt ${total} Fragen. Wenn du eine Antwort nicht weißt, sage: weiß nicht. Wenn du die Frage noch einmal hören willst, sage: wiederholen.`);
+  const how = Input.handsFree
+    ? 'Sprich deine Antwort nach dem Signalton, oder tippe sie ein.'
+    : Input.micAvailable
+      ? 'Tippe deine Antwort ein, oder tippe auf das Mikrofon und sprich.'
+      : 'Tippe deine Antwort ein.';
+  await Speech.speak(`Die Fragerunde beginnt! Jeder bekommt ${total} Fragen. ${how} Wenn du es nicht weißt, wähle: weiß nicht.`);
 
   for (let round = 1; round <= total; round++) {
     for (const p of state.players) {
@@ -918,21 +910,27 @@ async function victory(winner) {
   await Speech.speak(state.players.length === 1
     ? `Geschafft! ${winner.name}, du hast ${punkte(winner.score)} erreicht. Möge die Macht mit dir sein!`
     : `Der Sieger ist ${winner.name} mit ${punkte(winner.score)}${extra}! Herzlichen Glückwunsch. Möge die Macht mit dir sein!`);
-  UI.caption('Klicke auf „Neues Spiel“, um noch einmal zu spielen.');
+  UI.caption('Tippe auf „Neues Spiel“, um noch einmal zu spielen.');
 }
 
 let running = false;
 
-async function runGame() {
+async function runGame(names) {
   if (running) return;
   running = true;
   try {
     resetState();
+    state.players = names.map((name) => ({ name, score: 0, tie: 0, bump: false }));
+    state.phase = 'Fragerunde';
     UI.show('game');
     UI.heard('', false);
+    UI.note('');
+    UI.diag('');
+    UI.answerBar(false);
     render();
-    await Speech.speak('Willkommen beim Star-Wars-Quiz! Bis zu vier Spieler können mitmachen.');
-    await registerPlayers();
+    await Speech.speak(names.length === 1
+      ? `Willkommen beim Star-Wars-Quiz, ${names[0]}! Viel Erfolg!`
+      : `Willkommen beim Star-Wars-Quiz! Es spielen ${joinNames(names)}. Möge der Bessere gewinnen!`);
     await questionRounds();
     const winner = await finale();
     await victory(winner);
@@ -1041,7 +1039,16 @@ async function loadQuestions() {
   return data;
 }
 
-async function startGame() {
+function startGame() {
+  const status = $('#start-status');
+  if (!playerCount) {
+    status.textContent = 'Bitte wähle zuerst, wie viele Spieler mitspielen.';
+    status.classList.add('error');
+    return;
+  }
+  const names = readNames();
+  status.classList.remove('error');
+
   // Alles, was eine Nutzergeste braucht, synchron im Klick-Handler:
   Sound.init();
   Sound.ctx?.resume?.();
@@ -1049,16 +1056,8 @@ async function startGame() {
   Sound.ignite();
   Starfield.jump();
 
-  if (!TEST_MODE) {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      stream.getTracks().forEach((t) => t.stop());
-    } catch (err) {
-      showFatal('Ohne Mikrofon geht es leider nicht. Bitte erlaube den Mikrofonzugriff (Chrome: Schloss-Symbol in der Adressleiste · iPad: Einstellungen → Safari → Mikrofon) und lade die Seite neu. Das Spiel muss über https:// oder http://localhost geöffnet werden.');
-      return;
-    }
-  }
-  runGame();
+  Input.handsFree = $('#handsfree').checked && Input.micAvailable;
+  runGame(names);
 }
 
 async function init() {
@@ -1066,24 +1065,19 @@ async function init() {
   const status = $('#start-status');
   Speech.init();
 
-  if (TEST_MODE) $('#test-input').hidden = false;
-
-  if (!TEST_MODE && !Speech.recognitionSupported) {
-    status.textContent = 'Dein Browser unterstützt keine Spracherkennung. Bitte nutze Chrome am Computer oder Safari auf iPad/iPhone (Diktierfunktion einschalten).';
-    status.classList.add('error');
-    return;
-  }
   if (location.protocol === 'file:') {
     status.textContent = 'Bitte öffne das Spiel über GitHub Pages oder einen lokalen Server (siehe README), nicht direkt als Datei.';
     status.classList.add('error');
     return;
   }
 
+  // Freihändig nur anbieten, wo der Browser automatisch zuhören kann (nicht iPad/iPhone)
+  $('#handsfree-row').hidden = !(Input.micAvailable && !IS_IOS);
+
   try {
     DATA = await loadQuestions();
-    status.textContent = TEST_MODE
-      ? `Testmodus · ${DATA.questions.length} Fragen geladen`
-      : `${DATA.questions.length} Fragen + ${DATA.tiebreakers.length} Stichfragen bereit · Mikrofon wird benötigt`;
+    const how = Input.micAvailable ? 'Antworten per Tastatur oder Mikrofon' : 'Antworten per Tastatur';
+    status.textContent = `${DATA.questions.length} Fragen + ${DATA.tiebreakers.length} Stichfragen bereit · ${how}`;
     btn.disabled = false;
   } catch (err) {
     status.textContent = `Die Fragen konnten nicht geladen werden (${err.message}). Ist die Seite über GitHub Pages oder einen lokalen Server geöffnet?`;
@@ -1091,11 +1085,38 @@ async function init() {
     return;
   }
 
-  btn.addEventListener('click', startGame);
-  $('#btn-again').addEventListener('click', startGame);
+  // Startformular: erst Spielerzahl wählen, dann Namen; Enter springt zum nächsten Feld
+  document.querySelectorAll('.count-btn').forEach((b) =>
+    b.addEventListener('click', () => setPlayerCount(Number(b.dataset.count))));
+  document.querySelectorAll('.name-input').forEach((input, i) => input.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter' || i >= playerCount - 1) return;
+    e.preventDefault();
+    document.querySelectorAll('.name-input')[i + 1].focus();
+  }));
+  $('#start-form').addEventListener('submit', (e) => { e.preventDefault(); startGame(); });
+
+  // Antworten
+  $('#answer-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const input = $('#answer-text');
+    if (Input.text(input.value)) input.value = '';
+  });
+  $('#btn-mic').addEventListener('click', () => Input.micTap());
+  $('#mic').addEventListener('click', () => Input.micTap());
+  document.querySelectorAll('.chip[data-cmd]').forEach((b) =>
+    b.addEventListener('click', () => Input.text(b.dataset.cmd)));
+  document.querySelectorAll('#options li').forEach((li) => {
+    const choose = () => { if (Input._wait?.choice) Input.text(li.dataset.letter); };
+    li.addEventListener('click', choose);
+    li.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); choose(); }
+    });
+  });
+
+  $('#btn-again').addEventListener('click', () => { Speech.cancelSpeech(); UI.show('start'); });
   $('#btn-retry').addEventListener('click', () => {
     $('#fatal').hidden = true;
-    if (Speech.synthesisSupported) speechSynthesis.cancel();
+    Speech.cancelSpeech();
     UI.show('start');
   });
 }

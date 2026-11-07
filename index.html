@@ -26,13 +26,34 @@
         <p class="subtitle">Episode IV · V · VI</p>
 
         <ul class="howto">
-          <li><b>1–4 Spieler</b> sagen nacheinander ihren Namen – mit <q>fertig</q> geht's los.</li>
           <li><b>6 Fragen</b> pro Spieler. Freie Antwort richtig: <b>5 Punkte</b>.</li>
-          <li>Keine Ahnung? Sag <q>weiß nicht</q> – dann wählst du aus <b>A, B, C</b> für <b>2 Punkte</b>.</li>
-          <li>Frage nicht verstanden? Sag <q>wiederholen</q>.</li>
+          <li>Antworten <b>eintippen</b> oder aufs <b>Mikrofon tippen</b> und sprechen.</li>
+          <li>Keine Ahnung? <q>Weiß nicht</q> – dann wählst du aus <b>A, B, C</b> für <b>2 Punkte</b>.</li>
         </ul>
 
-        <button id="btn-start" class="saber-btn" type="button" disabled>Spiel starten</button>
+        <form id="start-form" class="start-form panel saber" autocomplete="off" novalidate>
+          <p class="form-title">Wie viele Spieler spielen mit?</p>
+          <div class="count-row" role="radiogroup" aria-label="Anzahl der Spieler">
+            <button type="button" class="count-btn" data-count="1" role="radio" aria-checked="false">1</button>
+            <button type="button" class="count-btn" data-count="2" role="radio" aria-checked="false">2</button>
+            <button type="button" class="count-btn" data-count="3" role="radio" aria-checked="false">3</button>
+            <button type="button" class="count-btn" data-count="4" role="radio" aria-checked="false">4</button>
+          </div>
+          <div id="names-block" class="names-block" hidden>
+            <p class="form-title">Wie heißt ihr?</p>
+            <div class="name-grid">
+              <input class="name-input" type="text" maxlength="24" placeholder="Name Spieler 1" aria-label="Name Spieler 1" autocapitalize="words">
+              <input class="name-input" type="text" maxlength="24" placeholder="Name Spieler 2" aria-label="Name Spieler 2" autocapitalize="words">
+              <input class="name-input" type="text" maxlength="24" placeholder="Name Spieler 3" aria-label="Name Spieler 3" autocapitalize="words">
+              <input class="name-input" type="text" maxlength="24" placeholder="Name Spieler 4" aria-label="Name Spieler 4" autocapitalize="words">
+            </div>
+          </div>
+          <label id="handsfree-row" class="check-row" hidden>
+            <input id="handsfree" type="checkbox">
+            <span><b>Freihändig spielen:</b> das Spiel hört nach jeder Frage automatisch zu (Mikrofon-Freigabe nötig)</span>
+          </label>
+          <button id="btn-start" class="saber-btn" type="submit" disabled>Spiel starten</button>
+        </form>
         <p id="start-status" class="start-status" role="status">Lade Fragen …</p>
       </div>
     </section>
@@ -46,7 +67,7 @@
           <span id="progress" class="progress"></span>
         </div>
 
-        <div id="mic" class="mic" data-state="idle" aria-live="polite" role="button" aria-label="Mikrofon">
+        <div id="mic" class="mic" data-state="idle" aria-live="polite">
           <div class="mic-ring">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <rect x="9" y="2.5" width="6" height="11.5" rx="3"/>
@@ -60,16 +81,35 @@
 
       <div class="main-grid">
         <article class="panel saber question-card">
-          <div id="phase-label" class="phase">Anmeldung</div>
+          <div id="phase-label" class="phase">Fragerunde</div>
           <h2 id="question-text" class="question-text"></h2>
 
           <ol id="options" class="options" hidden>
-            <li data-letter="A"><b>A</b><span class="opt-text"></span></li>
-            <li data-letter="B"><b>B</b><span class="opt-text"></span></li>
-            <li data-letter="C"><b>C</b><span class="opt-text"></span></li>
+            <li data-letter="A" role="button" tabindex="0"><b>A</b><span class="opt-text"></span></li>
+            <li data-letter="B" role="button" tabindex="0"><b>B</b><span class="opt-text"></span></li>
+            <li data-letter="C" role="button" tabindex="0"><b>C</b><span class="opt-text"></span></li>
           </ol>
 
           <div id="feedback" class="feedback" role="status"></div>
+
+          <form id="answer-form" class="answer-bar" autocomplete="off" novalidate>
+            <div class="answer-row">
+              <input id="answer-text" type="text" placeholder="Deine Antwort …" aria-label="Antwort" enterkeyhint="send" autocapitalize="sentences" autocorrect="off" spellcheck="false">
+              <button type="submit" class="saber-btn small">Antworten</button>
+              <button type="button" id="btn-mic" class="mic-btn" aria-label="Antwort sprechen" title="Antippen und sprechen" hidden>
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <rect x="9" y="2.5" width="6" height="11.5" rx="3"/>
+                  <path d="M5.5 11a6.5 6.5 0 0 0 13 0" fill="none"/>
+                  <path d="M12 17.5V21M8.5 21h7" fill="none"/>
+                </svg>
+              </button>
+            </div>
+            <div class="answer-tools">
+              <button type="button" class="chip" id="btn-dontknow" data-cmd="weiß nicht">Weiß nicht → A/B/C</button>
+              <button type="button" class="chip" data-cmd="wiederholen">Frage wiederholen</button>
+            </div>
+            <p id="answer-note" class="answer-note"></p>
+          </form>
         </article>
 
         <aside class="panel saber saber-green scoreboard" aria-label="Punktestand">
@@ -82,11 +122,6 @@
         <div id="caption" class="caption"></div>
         <div id="heard" class="heard"></div>
         <div id="diag" class="diag" aria-hidden="true"></div>
-        <form id="test-input" class="test-input" hidden autocomplete="off">
-          <label for="test-text">Testmodus – Antwort tippen:</label>
-          <input id="test-text" type="text" placeholder="z. B. Yoda, weiß nicht, B, fertig …">
-          <button type="submit" class="saber-btn small">Senden</button>
-        </form>
       </footer>
     </section>
 
