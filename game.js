@@ -16,7 +16,15 @@ const CONFIG = {
   pointsChoice: 2,
   maxListenTries: 3,      // Fehlversuche bei freier Antwort, danach A/B/C
   listenTimeoutMs: 12000, // maximale Zuhördauer pro Versuch
+  feedbackMs: 1600,       // so lange bleibt "richtig/falsch" sichtbar, bevor die nächste Frage kommt
 };
+
+/** Spielvarianten */
+const MODES = {
+  classic: 'Klassisch',
+  mc: 'Multiple Choice',
+};
+let gameMode = null; // 'classic' | 'mc'
 const TEST_MODE = new URLSearchParams(location.search).has('test');
 // iPad meldet sich mit "Desktop-Website anfordern" als Mac → zusätzlich Touch prüfen
 const IS_IOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
@@ -299,7 +307,32 @@ const Speech = {
     });
   },
 
-  async speak(text) {
+  /*
+   * Vorlesen läuft über eine Warteschlange und blockiert das Spiel nicht:
+   * Man kann jederzeit antworten. Eine Antwort bricht das Vorlesen ab (cancelSpeech).
+   */
+  _gen: 0,                      // erhöht sich bei jedem Abbruch; ältere Texte werden verworfen
+  _chain: Promise.resolve(),
+  _pending: 0,
+
+  /** spricht gerade oder hat noch Texte in der Warteschlange */
+  get busy() {
+    return this._pending > 0 || (this.synthesisSupported && speechSynthesis.speaking);
+  },
+
+  /** Text in die Warteschlange stellen; das Promise erfüllt sich, wenn er gesprochen oder abgebrochen wurde */
+  speak(text) {
+    const gen = this._gen;
+    this._pending++;
+    const run = this._chain
+      .then(() => this._speakNow(text, gen))
+      .finally(() => { this._pending--; });
+    this._chain = run.catch(() => {});
+    return run;
+  },
+
+  async _speakNow(text, gen) {
+    if (gen !== this._gen) return; // inzwischen abgebrochen
     UI.caption(text);
     UI.setMic('speaking');
     if (TEST_MODE || !this.synthesisSupported) {
@@ -307,17 +340,25 @@ const Speech = {
     } else {
       // In Sätze zerlegen: Chrome bricht sehr lange Utterances sonst nach ~15 s ab
       const parts = text.match(/[^.!?]+[.!?]*/g)?.map((s) => s.trim()).filter(Boolean) || [text];
-      for (const p of parts) await this._sentence(p);
+      for (const p of parts) {
+        if (gen !== this._gen) break;
+        await this._sentence(p);
+      }
     }
+    if (gen === this._gen && this._pending <= 1) UI.setMic('idle');
+  },
+
+  /** Vorlesen sofort beenden und die Warteschlange leeren */
+  cancelSpeech() {
+    this._gen++;
+    if (this.synthesisSupported) speechSynthesis.cancel();
     UI.setMic('idle');
   },
 
-  cancelSpeech() { if (this.synthesisSupported) speechSynthesis.cancel(); },
-
+  /** warten, bis nichts mehr vorgelesen wird (z. B. vor automatischem Zuhören) */
   async _waitIdle() {
-    if (!this.synthesisSupported) return;
     const t0 = Date.now();
-    while (speechSynthesis.speaking && Date.now() - t0 < 15000) await sleep(100);
+    while (this.busy && Date.now() - t0 < 60000) await sleep(100);
   },
 
   /** Startet die Erkennung sofort (synchron) und liefert {alts, error, quick}. */
@@ -519,13 +560,20 @@ const COMFORT = ['Leider falsch.', 'Das war leider nicht richtig.', 'Knapp daneb
  * @returns {Promise<string[]|null>} Antwort(en) oder null nach maxTries Fehlversuchen
  */
 async function ask(prompt, { retryPrompt = prompt, maxTries = Infinity, choice = false } = {}) {
-  await Speech.speak(prompt);
+  Speech.speak(prompt); // nicht abwarten: Antworten sind sofort möglich
   for (let tries = 1; ; tries++) {
     const { alts } = await Input.wait({ choice });
+    Speech.cancelSpeech(); // Antwort da → Vorlesen abbrechen, weiter geht's
     if (alts?.length) return alts;
     if (tries >= maxTries) return null;
-    await Speech.speak(`${pick(SORRY)} ${retryPrompt}`);
+    Speech.speak(`${pick(SORRY)} ${retryPrompt}`);
   }
+}
+
+/** Rückmeldung vorlesen, kurz sichtbar lassen und weitermachen (Vorlesen läuft im Hintergrund weiter) */
+async function announce(text) {
+  Speech.speak(text);
+  await sleep(TEST_MODE ? 40 : CONFIG.feedbackMs);
 }
 
 /* ==========================================================
@@ -788,7 +836,7 @@ async function askQuestion(player, q, { label, bucket }) {
   }
 
   if (!alts) {
-    await Speech.speak('Ich konnte leider keine Antwort verstehen. Ich gebe dir drei Möglichkeiten.');
+    Speech.speak('Ich konnte leider keine Antwort verstehen. Ich gebe dir drei Möglichkeiten.');
     return choiceRound(player, q, bucket);
   }
 
@@ -797,7 +845,7 @@ async function askQuestion(player, q, { label, bucket }) {
     state.feedback = { text: `Richtig! ${q.answer} · +${CONFIG.pointsFree} Punkte`, type: 'ok' };
     render();
     Sound.correct();
-    await Speech.speak(`${pick(PRAISE)} ${q.answer} ist richtig. Fünf Punkte für ${player.name}.`);
+    await announce(`${pick(PRAISE)} ${q.answer} ist richtig. Fünf Punkte für ${player.name}.`);
     return;
   }
 
@@ -808,17 +856,26 @@ async function askQuestion(player, q, { label, bucket }) {
   state.feedback = { text: `„${alts[0]}“ ist falsch. Richtig wäre: ${q.answer}`, type: 'bad' };
   render();
   Sound.wrong();
-  await Speech.speak(`${pick(COMFORT)} Die richtige Antwort ist: ${q.answer}. Keine Punkte.`);
+  await announce(`${pick(COMFORT)} Die richtige Antwort ist: ${q.answer}. Keine Punkte.`);
 }
 
-async function choiceRound(player, q, bucket) {
+/**
+ * A/B/C-Runde (2 Punkte).
+ * Klassisch: nach „weiß nicht“. Multiple Choice: direkt als Frage – dann mit `intro` (Spieler + Frage).
+ */
+async function choiceRound(player, q, bucket, { intro = '' } = {}) {
+  state.current = player;
+  state.questionText = q.question;
   state.options = q.options;
   state.reveal = null;
   state.feedback = { text: 'Wähle A, B oder C – richtig gibt 2 Punkte.', type: 'info' };
   render();
 
   const optText = LETTERS.map((L) => `${L}: ${q.options[L]}.`).join(' ');
-  let alts = await ask(`Hier sind drei Möglichkeiten. ${optText} Welche nimmst du: A, B oder C?`, {
+  const prompt = intro
+    ? `${intro} ${optText}`
+    : `Hier sind drei Möglichkeiten. ${optText} Welche nimmst du: A, B oder C?`;
+  let alts = await ask(prompt, {
     retryPrompt: `Bitte wähle A, B oder C. ${optText}`,
     choice: true,
   });
@@ -840,35 +897,50 @@ async function choiceRound(player, q, bucket) {
     state.feedback = { text: `${letter} ist richtig! +${CONFIG.pointsChoice} Punkte`, type: 'ok' };
     render();
     Sound.correct();
-    await Speech.speak(`${letter} ist richtig! ${correctText}. Zwei Punkte für ${player.name}.`);
+    await announce(`${letter} ist richtig! ${correctText}. Zwei Punkte für ${player.name}.`);
   } else {
     state.feedback = { text: `${letter} ist falsch. Richtig: ${q.correct} – ${correctText}`, type: 'bad' };
     render();
     Sound.wrong();
-    await Speech.speak(`${letter} ist leider falsch. Richtig wäre ${q.correct} gewesen: ${correctText}.`);
+    await announce(`${letter} ist leider falsch. Richtig wäre ${q.correct} gewesen: ${correctText}.`);
   }
 }
 
+/** eine Frage je nach Spielvariante stellen */
+function playQuestion(player, q, { label, bucket }) {
+  if (gameMode === 'mc') {
+    const intro = `${player.name}, du bist dran. ${label} ${q.question}`.replace(/\s+/g, ' ');
+    return choiceRound(player, q, bucket, { intro });
+  }
+  return askQuestion(player, q, { label, bucket });
+}
+
 async function questionRounds() {
-  state.phase = 'Fragerunde';
+  state.phase = gameMode === 'mc' ? 'Multiple Choice' : 'Fragerunde';
   const total = CONFIG.questionsPerPlayer;
-  const how = Input.handsFree
-    ? 'Sprich deine Antwort nach dem Signalton, oder tippe sie ein.'
-    : Input.micAvailable
-      ? 'Tippe deine Antwort ein, oder tippe auf das Mikrofon und sprich.'
-      : 'Tippe deine Antwort ein.';
-  await Speech.speak(`Die Fragerunde beginnt! Jeder bekommt ${total} Fragen. ${how} Wenn du es nicht weißt, wähle: weiß nicht.`);
+  let how;
+  if (gameMode === 'mc') {
+    how = Input.micAvailable
+      ? 'Tippe auf A, B oder C, oder sag den Buchstaben.'
+      : 'Tippe auf A, B oder C.';
+    Speech.speak(`Die Fragerunde beginnt! Jeder bekommt ${total} Fragen mit je drei Antworten. ${how} Du kannst jederzeit antworten, auch während ich noch spreche.`);
+  } else {
+    how = Input.handsFree
+      ? 'Sprich deine Antwort nach dem Signalton, oder tippe sie ein.'
+      : Input.micAvailable
+        ? 'Tippe deine Antwort ein, oder tippe auf das Mikrofon und sprich.'
+        : 'Tippe deine Antwort ein.';
+    Speech.speak(`Die Fragerunde beginnt! Jeder bekommt ${total} Fragen. ${how} Wenn du es nicht weißt, wähle: weiß nicht. Du kannst jederzeit antworten, auch während ich noch spreche.`);
+  }
 
   for (let round = 1; round <= total; round++) {
     for (const p of state.players) {
       state.progress = `Frage ${round} von ${total}`;
-      await askQuestion(p, drawQuestion(), { label: `Frage ${round}.`, bucket: 'score' });
+      await playQuestion(p, drawQuestion(), { label: `Frage ${round}.`, bucket: 'score' });
     }
     if (round === Math.floor(total / 2) && state.players.length > 1) {
-      state.current = null;
-      render();
       const standings = sortedPlayers().map((p) => `${p.name} hat ${punkteGesprochen(p.score)}`).join(', ');
-      await Speech.speak(`Halbzeit! Zwischenstand: ${standings}.`);
+      Speech.speak(`Halbzeit! Zwischenstand: ${standings}.`);
     }
   }
 }
@@ -897,7 +969,7 @@ async function finale() {
     for (const p of leaders) {
       const before = p.tie;
       state.progress = `Stichfrage ${round}`;
-      await askQuestion(p, drawTiebreak(), { label: '', bucket: 'tie' });
+      await playQuestion(p, drawTiebreak(), { label: '', bucket: 'tie' });
       gained.set(p, p.tie - before);
     }
     const best = Math.max(...leaders.map((p) => gained.get(p)));
@@ -908,7 +980,7 @@ async function finale() {
       state.options = null;
       state.feedback = { text: `Weiter geht's: ${joinNames(next.map((p) => p.name))}`, type: 'info' };
       render();
-      await Speech.speak(`Immer noch Gleichstand zwischen ${joinNames(next.map((p) => p.name))}. Es folgt die nächste Stichfrage!`);
+      await announce(`Immer noch Gleichstand zwischen ${joinNames(next.map((p) => p.name))}. Es folgt die nächste Stichfrage!`);
     }
     leaders = next;
     round++;
@@ -936,14 +1008,14 @@ async function runGame(names) {
   try {
     resetState();
     state.players = names.map((name) => ({ name, score: 0, tie: 0, bump: false }));
-    state.phase = 'Fragerunde';
+    state.phase = gameMode === 'mc' ? 'Multiple Choice' : 'Fragerunde';
     UI.show('game');
     UI.heard('', false);
     UI.note('');
     UI.diag('');
     UI.answerBar(false);
     render();
-    await Speech.speak(names.length === 1
+    Speech.speak(names.length === 1
       ? `Willkommen beim Star-Wars-Quiz, ${names[0]}! Viel Erfolg!`
       : `Willkommen beim Star-Wars-Quiz! Es spielen ${joinNames(names)}. Möge der Bessere gewinnen!`);
     await questionRounds();
@@ -1054,8 +1126,27 @@ async function loadQuestions() {
   return data;
 }
 
+/** Schritt 1 → 2: Spielvariante gewählt */
+function setMode(mode) {
+  gameMode = mode;
+  $('#mode-label').textContent = MODES[mode];
+  $('#mode-step').hidden = true;
+  $('#start-form').hidden = false;
+  $('#start-status').classList.remove('error');
+  const handsfreeAllowed = Input.micAvailable && !IS_IOS && mode === 'classic';
+  $('#handsfree-row').hidden = !handsfreeAllowed;
+  if (!handsfreeAllowed) $('#handsfree').checked = false;
+}
+
+/** zurück zu Schritt 1 */
+function showModeStep() {
+  $('#start-form').hidden = true;
+  $('#mode-step').hidden = false;
+}
+
 function startGame() {
   const status = $('#start-status');
+  if (!gameMode) { showModeStep(); return; }
   if (!playerCount) {
     status.textContent = 'Bitte wähle zuerst, wie viele Spieler mitspielen.';
     status.classList.add('error');
@@ -1086,8 +1177,11 @@ async function init() {
     return;
   }
 
-  // Freihändig nur anbieten, wo der Browser automatisch zuhören kann (nicht iPad/iPhone)
-  $('#handsfree-row').hidden = !(Input.micAvailable && !IS_IOS);
+  // Freihändig wird erst nach der Moduswahl angeboten (nur Klassisch, nicht iPad/iPhone)
+  $('#handsfree-row').hidden = true;
+  document.querySelectorAll('.mode-card').forEach((b) =>
+    b.addEventListener('click', () => setMode(b.dataset.mode)));
+  $('#btn-mode-change').addEventListener('click', showModeStep);
 
   try {
     DATA = await loadQuestions();

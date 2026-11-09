@@ -23,13 +23,28 @@
         </h1>
         <p class="subtitle">Episode IV · V · VI</p>
 
-        <ul class="howto">
-          <li><b>6 Fragen</b> pro Spieler. Freie Antwort richtig: <b>5 Punkte</b>.</li>
-          <li>Antworten <b>eintippen</b> oder aufs <b>Mikrofon tippen</b> und sprechen.</li>
-          <li>Keine Ahnung? <q>Weiß nicht</q> – dann wählst du aus <b>A, B, C</b> für <b>2 Punkte</b>.</li>
-        </ul>
+        <!-- Schritt 1: Spielvariante -->
+        <div id="mode-step" class="mode-step">
+          <p class="form-title">Welche Spielvariante?</p>
+          <div class="mode-grid">
+            <button type="button" class="mode-card saber" data-mode="classic">
+              <span class="mode-name">Klassisch</span>
+              <span class="mode-desc">Antwort frei eintippen oder sagen: <b>5 Punkte</b>.<br>Keine Ahnung? <q>Weiß nicht</q> → A, B, C für <b>2 Punkte</b>.</span>
+            </button>
+            <button type="button" class="mode-card saber saber-green" data-mode="mc">
+              <span class="mode-name">Multiple Choice</span>
+              <span class="mode-desc">Jede Frage mit drei Antworten <b>A, B, C</b>.<br>Richtig: <b>2 Punkte</b>.</span>
+            </button>
+          </div>
+          <p class="mode-hint"><b>6 Fragen</b> pro Spieler · Antworten jederzeit möglich – auch während das Spiel noch vorliest.</p>
+        </div>
 
-        <form id="start-form" class="start-form panel saber" autocomplete="off" novalidate>
+        <!-- Schritt 2: Spieler -->
+        <form id="start-form" class="start-form panel saber" autocomplete="off" novalidate hidden>
+          <div class="mode-chosen">
+            <span>Variante: <b id="mode-label">–</b></span>
+            <button type="button" id="btn-mode-change" class="chip">Ändern</button>
+          </div>
           <p class="form-title">Wie viele Spieler spielen mit?</p>
           <div class="count-row" role="radiogroup" aria-label="Anzahl der Spieler">
             <button type="button" class="count-btn" data-count="1" role="radio" aria-checked="false">1</button>

@@ -40,17 +40,22 @@ Danach im Browser <http://localhost:8000> öffnen.
 
 ## So wird gespielt
 
-1. **Anzahl wählen:** Tippe auf **1, 2, 3 oder 4**, je nachdem, wie viele Spieler mitspielen.
-2. **Namen eintippen:** Es erscheinen passend viele Namensfelder. Ein leer gelassenes Feld heißt im Spiel einfach „Spieler 2“ usw. Danach **Spiel starten** tippen.
-3. **Fragerunde:** Reihum bekommt jeder Spieler 6 Fragen. Das Spiel sagt an, wer dran ist, und liest die Frage vor.
+1. **Spielvariante wählen:**
+   - **Klassisch:** Antwort frei eintippen oder sagen. Richtig: **5 Punkte**. Mit **„Weiß nicht“** erscheinen drei Möglichkeiten A, B, C. Richtig: **2 Punkte**.
+   - **Multiple Choice:** Jede Frage kommt direkt mit drei Möglichkeiten A, B, C. Richtig: **2 Punkte**. Die freie Antwort entfällt.
+2. **Anzahl wählen:** Tippe auf **1, 2, 3 oder 4**, je nachdem, wie viele Spieler mitspielen. Über **„Ändern“** kommst du zurück zur Spielvariante.
+3. **Namen eintippen:** Es erscheinen passend viele Namensfelder. Ein leer gelassenes Feld heißt im Spiel einfach „Spieler 2“ usw. Danach **Spiel starten** tippen.
+4. **Fragerunde:** Reihum bekommt jeder Spieler 6 Fragen. Das Spiel sagt an, wer dran ist, und liest die Frage vor.
+   - **Du musst nicht warten, bis das Spiel ausgeredet hat.** Antworten und Tasten funktionieren sofort. Sobald du antwortest, verstummt das Vorlesen, und es geht weiter.
    - Antwort **eintippen** und Enter drücken bzw. **Antworten** tippen. Alternativ auf das **Mikrofon** tippen und sprechen.
-   - Freie Antwort richtig: **5 Punkte**. Falsch: 0 Punkte, und die Frage ist für diesen Spieler vorbei.
-   - **Weiß nicht → A/B/C** (getippt, gesagt oder als Taste): Es erscheinen drei Möglichkeiten. **A, B oder C** antippen, eintippen oder sagen. Richtig: **2 Punkte**.
+   - Klassisch: Freie Antwort richtig: **5 Punkte**. Falsch: 0 Punkte, und die Frage ist für diesen Spieler vorbei.
+   - **Weiß nicht → A/B/C** (nur Klassisch; getippt, gesagt oder als Taste): Es erscheinen drei Möglichkeiten.
+   - **A, B oder C** antippen, eintippen oder sagen. Richtig: **2 Punkte**.
    - **Frage wiederholen** liest die Frage noch einmal vor.
-4. **Endstand:** Die Punkte werden angesagt und angezeigt. Bei **Gleichstand an der Spitze** bekommen die betroffenen Spieler je eine **Stichfrage** nach denselben Regeln. Das wiederholt sich, bis ein Sieger feststeht.
-5. **Siegerbildschirm:** Der Name des Gewinners erscheint groß, und ein Frachter fliegt durchs Bild. **Neues Spiel** führt zurück zum Start. Anzahl und Namen bleiben eingetragen.
+5. **Endstand:** Die Punkte werden angesagt und angezeigt. Bei **Gleichstand an der Spitze** bekommen die betroffenen Spieler je eine **Stichfrage** nach denselben Regeln. Das wiederholt sich, bis ein Sieger feststeht.
+6. **Siegerbildschirm:** Der Name des Gewinners erscheint groß, und ein Frachter fliegt durchs Bild. **Neues Spiel** führt zurück zum Start. Variante, Anzahl und Namen bleiben eingetragen.
 
-**Freihändig spielen (nur Computer):** In Chrome am Computer gibt es auf dem Startbildschirm die Option **„Freihändig spielen“**. Dann hört das Spiel nach jeder Frage automatisch zu (Signalton, rotes Mikrofon). Tippen geht trotzdem jederzeit.
+**Freihändig spielen (nur Computer, nur Klassisch):** In Chrome am Computer gibt es nach der Wahl „Klassisch“ die Option **„Freihändig spielen“**. Dann hört das Spiel nach jeder Frage automatisch zu (Signalton, rotes Mikrofon). Tippen geht trotzdem jederzeit.
 
 ## Testmodus
 
